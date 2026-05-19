@@ -70,38 +70,73 @@ If you have PHP installed in your terminal, run the helper utility:
     ```
 This utility automatically drops old tables, configures all foreign key triggers, compiles indices, and inserts fully-populated seed datasets.
 
-#### Option B: Manual phpMyAdmin Import
-1. Navigate to `http://localhost/phpmyadmin` in your web browser.
-2. Click **New** in the left sidebar and create a database named `tripistry-cos221` with `utf8mb4_general_ci` collation.
-3. Click on the new database, select the **Import** tab on the top menu.
-4. Upload and import `Tripistry_schema.sql` first.
-5. Once complete, select **Import** again, upload and import `seed.sql` to populate initial datasets.
+#### Option B: Manual phpMyAdmin Import (Step-by-Step for XAMPP)
+1. **Open phpMyAdmin**: Launch your web browser and go to [http://localhost/phpmyadmin](http://localhost/phpmyadmin).
+2. **Create Database**:
+   * Click the **New** button in the left-hand navigation pane.
+   * Enter `tripistry-cos221` as the database name.
+   * Select **`utf8mb4_general_ci`** from the collation dropdown (ensures full Unicode and emoji compatibility).
+   * Click **Create**.
+3. **Import the Table Schema**:
+   * Select the newly created `tripistry-cos221` database in the left sidebar.
+   * Click the **Import** tab located on the top horizontal menu bar.
+   * Click the **Choose File** button under *File to import*, navigate to your repository folder, and select **`Tripistry_schema.sql`**.
+   * Leave all other settings at their defaults and scroll down to the bottom of the page.
+   * Click the **Import** (or **Go**) button. You should see a green success banner showing tables created.
+4. **Import the Mock Seed Data**:
+   * Click the **Import** tab on the top menu bar once again.
+   * Click **Choose File** and select the **`seed.sql`** file.
+   * Scroll to the bottom and click **Import** (or **Go**). Your database is now fully populated with comprehensive mock records!
 
 ---
 
-## 🔑 Seeded Mock Accounts
+## 🔑 Seeded Mock Accounts & Datasets
+
 To test all aspects of the application without registering new accounts, use these pre-loaded mock credentials (all accounts share the password **`password123`**):
 
 ### 🏢 Travel Agency Accounts
-Use these to manage catalogs, schedule date ranges, and view CRM customer lists:
-*   **Wanderlust Travels**:
+Use these to manage catalogs, schedule date ranges, view Chart.js analytics, and interact with the CRM Lead Directory:
+*   **Wanderlust Travels** (Superb 4.90 Rating, 4 Active Packages, 6 Paid Bookings):
     *   **Email**: `contact@wanderlust.com`
     *   **Password**: `password123`
-*   **GlobeTrek Expeditions**:
+*   **GlobeTrek Expeditions** (3.00 Rating, 2 Active Packages, Pending Bookings):
     *   **Email**: `info@globetrek.com`
+    *   **Password**: `password123`
+*   **Apex Alpine Adventures** (New Agency, 4.50 Rating, Luxury Alps package):
+    *   **Email**: `apex@agency.com`
     *   **Password**: `password123`
 
 ### 🧑‍🚀 Explorer Traveller Accounts
-Use these to explore itineraries, test mapping, write sentiment reviews, and book group trips:
-*   **Alice Smith**:
+Use these to explore itineraries, test Leaflet.js geodesic maps, write reviews to trigger sentiment scores, check out trips, and sync calendar downloads:
+*   **Alice Smith** (Paris fan, budget $5,500.00, paid bookings, unread alerts):
     *   **Email**: `alice@gmail.com`
     *   **Password**: `password123`
-*   **Bob Jones**:
+*   **Bob Jones** (Asia enthusiast, budget $1,600.00, pending Japan booking):
     *   **Email**: `bob@gmail.com`
     *   **Password**: `password123`
-*   **Charlie Brown**:
+*   **Charlie Brown** (Italy explorer, budget $2,900.00, paid Bali trip):
     *   **Email**: `charlie@gmail.com`
     *   **Password**: `password123`
+*   **Diana Prince** (Luxury traveller, budget $8,500.00, paid Paris & pending Swiss Alps):
+    *   **Email**: `diana@gmail.com`
+    *   **Password**: `password123`
+*   **Evan Wright** (Surfer, budget $1,800.00, refunded Bali trip):
+    *   **Email**: `evan@gmail.com`
+    *   **Password**: `password123`
+*   **Fiona Gallagher** (Budget explorer, budget $1,200.00, failed checkout):
+    *   **Email**: `fiona@gmail.com`
+    *   **Password**: `password123`
+*   **George Lucas** (High-roller traveller, budget $25,000.00, multiple paid group bookings):
+    *   **Email**: `george@gmail.com`
+    *   **Password**: `password123`
+
+### 📊 Seeded Datasets Included
+
+*   **Bookings Ledger**: Built-in historical records (Paid, Pending, Failed, Refunded) which immediately populate the agency dashboard performance charts (bookings funnel, revenue shares) and customer lifetime financial contributions inside the CRM lead generator directory.
+*   **Agency Contact Hotlines**: Multi-valued telephone directories are fully seeded for agencies to test profile updates.
+*   **Sentiment Review Entries**: Pre-loaded with positive, negative, and neutral comment strings to test the Custom Sentiment Lexicon engine and automatic rating re-calculation.
+*   ** AppBar Notifications**: Seeding includes read and unread messages for various accounts, enabling direct visual verification of the notification hub bell icon.
+
 
 ---
 
