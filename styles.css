@@ -1,5 +1,57 @@
-body { font-family: Arial, sans-serif; padding: 20px; }
-.grid { display: flex; gap: 20px; flex-wrap: wrap; }
-.card { border: 1px solid #ccc; padding: 15px; border-radius: 5px; width: 250px; }
-form { display: flex; flex-direction: column; gap: 10px; max-width: 300px; margin-bottom: 40px; }
-input, select, textarea, button { padding: 10px; }
+/* Base Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    padding: 20px;
+    margin: 0;
+}
+h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+
+/* Package Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.2s;
+}
+.card:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+.card h3 { margin-top: 0; color: #2980b9; }
+.price-tag { font-size: 1.2em; font-weight: bold; color: #27ae60; }
+.stars { color: #f39c12; font-size: 1.1em; letter-spacing: 2px; }
+
+/* Forms */
+.form-container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin-bottom: 40px;
+}
+.form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
+.form-group label { margin-bottom: 5px; font-weight: bold; color: #555; }
+input, select, textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+button:hover { background-color: #2980b9; }
