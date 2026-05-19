@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tripistry - Traveller Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600&amp;f[]=satoshi@400,500,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#E63946",
+          "background-light": "#F8F9FA",
+          "background-dark": "#211112",
+          "surface": "#FFFFFF",
+          "text-main": "#1D3557",
+          "muted": "#8D99AE",
+          "accent": "#457B9D"
+        },
+        fontFamily: {
+          "heading": ["Clash Display", "sans-serif"],
+          "body": ["Satoshi", "sans-serif"]
+        },
+        borderRadius: {
+          "input": "8px",
+          "button": "8px"
+        },
+        boxShadow: {
+          "button": "0 4px 14px rgba(230, 57, 70, 0.25)",
+          "button-hover": "0 6px 20px rgba(230, 57, 70, 0.35)",
+        }
+      },
+    },
+  }
+</script>
+<style>
+  body { font-family: 'Satoshi', sans-serif; }
+  h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Clash Display', sans-serif; }
+  .segmented-control input:checked + div {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: #1D3557;
+  }
+</style>
+</head>
+<body class="bg-surface text-text-main h-screen w-full flex overflow-hidden">
+<!-- Left Side: Image -->
+<div class="hidden md:block w-1/2 lg:w-1/2 h-full relative">
+<div class="absolute inset-0 bg-black/30 z-10"></div>
+<div class="w-full h-full bg-cover bg-center bg-no-repeat" data-alt="A serene, high-end mountain lodge nestled among snow-capped peaks at twilight. The scene is illuminated by warm, inviting lights glowing from the wooden structure, contrasting with the cool blue tones of the snowy landscape. The overall mood is luxurious, peaceful, and exclusive, reflecting a premium travel experience. The composition is clean and modern, suitable for a sophisticated digital platform." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAdHm2er5rflOOuiGFmtEihZ7ts5QTqZ03b4hBkmfU6Hhkzmckb1PO2AlFkDyNfh6Ctl6fR2ebAgIo6yrpMa5PSQimp651YFoIwIOPoEED0mlF9kmooOsHwVt3mJfbLvwBE-UokKdWgqpE0NzEegTcLAjKPMd-1Ytx2HCZHo_eJu6Wn1C86tu0FaGuagGhEzC64SnwBYbqyLflSJe9BBHa9VRxHZ8PXfM5eHVAMJlvc901yyKNsvcxQrdi2jw7q_rjIthBDZ_vmi-s6');">
+</div>
+</div>
+<!-- Right Side: Form Container -->
+<div class="w-full md:w-1/2 lg:w-1/2 h-full flex flex-col justify-center items-center p-6 sm:p-12 md:p-16 overflow-y-auto bg-surface">
+<div class="w-full max-w-[400px] flex flex-col gap-8">
+<!-- Segmented Control -->
+<div class="w-full max-w-[320px] mx-auto bg-background-light p-1 rounded-xl flex h-[48px] relative segmented-control">
+<label class="flex-1 cursor-pointer relative z-10">
+<input checked="" class="sr-only" name="role" type="radio" value="traveller"/>
+<div class="h-full w-full flex items-center justify-center rounded-[8px] text-muted text-sm font-medium transition-all duration-200">
+            Traveller
+          </div>
+</label>
+<label class="flex-1 cursor-pointer relative z-10">
+<input class="sr-only" name="role" type="radio" value="agency"/>
+<div class="h-full w-full flex items-center justify-center rounded-[8px] text-muted text-sm font-medium transition-all duration-200">
+            Travel Agency
+          </div>
+</label>
+</div>
+<!-- Header -->
+<div class="text-center md:text-left mb-2">
+<h1 class="text-[32px] font-heading font-semibold text-text-main leading-tight mb-2">Welcome to Tripistry</h1>
+<p class="text-muted text-base">Sign in to continue your journey.</p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-5">
+<!-- Email Input -->
+<div class="flex flex-col gap-1.5">
+<label class="text-sm font-medium text-text-main" for="email">Email address</label>
+<input class="w-full h-[48px] px-4 rounded-input border border-muted/50 bg-surface text-text-main placeholder:text-muted focus:outline-none focus:ring-0 focus:border-accent transition-colors duration-150" id="email" placeholder="Enter your email" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-1.5">
+<label class="text-sm font-medium text-text-main" for="password">Password</label>
+<div class="relative flex items-center w-full">
+<input class="w-full h-[48px] px-4 pr-12 rounded-input border border-muted/50 bg-surface text-text-main placeholder:text-muted focus:outline-none focus:ring-0 focus:border-accent transition-colors duration-150" id="password" placeholder="Enter your password" type="password"/>
+<button aria-label="Toggle password visibility" class="absolute right-3 text-muted hover:text-text-main transition-colors flex items-center justify-center" type="button">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Utility Row -->
+<div class="flex items-center justify-between mt-1 mb-2">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="rounded-[4px] border-muted/50 text-primary focus:ring-primary w-4 h-4 cursor-pointer" type="checkbox"/>
+<span class="text-sm font-medium text-text-main group-hover:text-primary transition-colors">Remember Me</span>
+</label>
+<a class="text-sm font-medium text-muted hover:text-text-main transition-colors" href="#">Forgot Password?</a>
+</div>
+<!-- Submit Button -->
+<button class="w-full h-[48px] bg-primary text-surface rounded-button font-semibold text-[15px] shadow-button hover:shadow-button-hover hover:-translate-y-[1px] transition-all duration-200 flex items-center justify-center group relative overflow-hidden" type="submit">
+<span class="relative z-10">Sign In</span>
+</button>
+</form>
+<!-- Footer Link -->
+<div class="text-center mt-4">
+<p class="text-sm text-muted font-medium">Don't have an account? <a class="text-primary hover:text-text-main transition-colors ml-1" href="#">Create Account</a></p>
+</div>
+</div>
+</div>
+<script>
+    // Micro-interaction for password toggle
+    const passwordInput = document.getElementById('password');
+    const toggleBtn = passwordInput.nextElementSibling;
+    const icon = toggleBtn.querySelector('span');
+
+    toggleBtn.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      icon.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+    });
+  </script>
+</body></html>
