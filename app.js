@@ -61,13 +61,13 @@ if(document.getElementById('reviewForm')) {
     });
 }
 
-// Convert number to stars (e.g., 4 = ★★★★☆)
+// Convert number to stars 
 function getStarRating(rating) {
     const num = Math.round(Number(rating) || 0);
     return '★'.repeat(num) + '☆'.repeat(5 - num);
 }
 
-// Format a date nicely (e.g., 2026-10-15 -> 15 Oct 2026)
+// Format a date nicely 
 function formatDate(dateString) {
     const options = { day: 'numeric', month: 'short', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-GB', options);
