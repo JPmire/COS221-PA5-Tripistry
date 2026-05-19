@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore - Tripistry</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">Tripistry</a>
+        <div class="nav-links">
+            <a href="#">My Bookings</a>
+            <a href="#">Reviews</a>
+            <a href="#" class="btn-primary">Logout</a> 
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <h1>Where to next?</h1>
+            
+            <form class="search-bar" action="search.php" method="GET">
+                <select name="category">
+                    <option value="all">All</option>
+                    <option value="destinations">Destinations</option>
+                    <option value="flights">Flights</option>
+                    <option value="accommodations">Accommodations</option>
+                </select>
+                <input type="text" name="query" placeholder="Search places, hotels, or restaurants...">
+                <button type="submit" class="btn-primary">Search</button>
+            </form>
+
+            <div class="category-nav">
+                <a href="#" class="category-item"><div class="category-icon">🏨</div>Hotels</a>
+                <a href="#" class="category-item"><div class="category-icon">✈️</div>Flights</a>
+                <a href="#" class="category-item"><div class="category-icon">📸</div>Attractions</a>
+                <a href="#" class="category-item"><div class="category-icon">🍽️</div>Restaurants</a>
+                <a href="#" class="category-item"><div class="category-icon">🎒</div>Packages</a>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Popular Travel Packages</h2>
+            <div class="card-grid">
+                
+                <div class="card">
+                    <div class="card-img">Image Placeholder</div> 
+                    <div class="card-info">
+                        <div class="card-title">Cape Town Getaway</div>
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">By Sunshine Agencies</p>
+                        <div class="card-price">From R4,500</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-img">Image Placeholder</div>
+                    <div class="card-info">
+                        <div class="card-title">Kruger Safari</div>
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">By Wild Tours</p>
+                        <div class="card-price">From R8,200</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-img">Image Placeholder</div>
+                    <div class="card-info">
+                        <div class="card-title">Durban Coastal Retreat</div>
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">By OceanView Travel</p>
+                        <div class="card-price">From R3,100</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

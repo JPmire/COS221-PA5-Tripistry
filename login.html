@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tripistry</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">Tripistry</a>
+        <div class="nav-links">
+            <a href="#">Help</a>
+            <a href="#" class="btn-primary">Register</a>
+        </div>
+    </header>
+
+    <main class="login-container">
+        <div class="login-card">
+            <h2>Welcome Back</h2>
+            
+            <div class="role-toggle">
+                <button class="role-btn active" onclick="setRole('traveller')">Traveller</button>
+                <button class="role-btn" onclick="setRole('agency')">Travel Agency</button>
+            </div>
+
+            <form action="login.php" method="POST">
+                <input type="hidden" id="user-role" name="role" value="traveller">
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn-primary login-submit">Sign In</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function setRole(role) {
+            document.getElementById('user-role').value = role;
+            const buttons = document.querySelectorAll('.role-btn');
+            buttons[0].classList.toggle('active', role === 'traveller');
+            buttons[1].classList.toggle('active', role === 'agency');
+        }
+    </script>
+</body>
+</html>
