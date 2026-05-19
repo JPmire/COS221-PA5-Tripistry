@@ -6,7 +6,6 @@
         </div>
     </footer>
     <?php endif; ?>
-    <script src="<?php echo $base_url; ?>/js/api.js"></script>
     <?php if (isset($extra_js)): ?>
     <script src="<?php echo $base_url . '/' . $extra_js; ?>"></script>
     <?php endif; ?>
