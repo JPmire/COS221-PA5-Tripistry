@@ -1,0 +1,5 @@
+body { font-family: Arial, sans-serif; padding: 20px; }
+.grid { display: flex; gap: 20px; flex-wrap: wrap; }
+.card { border: 1px solid #ccc; padding: 15px; border-radius: 5px; width: 250px; }
+form { display: flex; flex-direction: column; gap: 10px; max-width: 300px; margin-bottom: 40px; }
+input, select, textarea, button { padding: 10px; }
