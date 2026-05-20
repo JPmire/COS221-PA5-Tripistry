@@ -1,12 +1,16 @@
 <?php
-$page_title = 'Login';
-$hide_nav = true;
-require_once 'includes/header.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (isset($_SESSION['user_id'])) {
     header("Location: " . ($_SESSION['role'] === 'TravelAgency' ? 'agency_dashboard.php' : 'traveller_dashboard.php'));
     exit;
 }
+
+$page_title = 'Login';
+$hide_nav = true;
+require_once 'includes/header.php';
 ?>
 
 <style>

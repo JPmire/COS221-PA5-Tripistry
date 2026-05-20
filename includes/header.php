@@ -2,8 +2,9 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// Base path for relative links
-$base_url = '/cos221/COS221-PA5-Tripistry';
+// Base path dynamically calculated to support running in any subdirectory (e.g. Current Task 5)
+$base_url = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+
 
 $current_page = basename($_SERVER['PHP_SELF']);
 

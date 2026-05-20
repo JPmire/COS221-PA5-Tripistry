@@ -1,14 +1,16 @@
 <?php
-$page_title = 'Package Details';
 require_once 'includes/db_connect.php';
-require_once 'includes/header.php';
 
 if (!isset($_GET['id'])) {
     header("Location: packages.php");
     exit;
 }
 
+$page_title = 'Package Details';
+require_once 'includes/header.php';
+
 $package_id = (int)$_GET['id'];
+
 $error = '';
 $success = '';
 
