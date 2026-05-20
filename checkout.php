@@ -1,12 +1,14 @@
 <?php
-$page_title = 'Secure Booking Checkout';
 require_once 'includes/db_connect.php';
-require_once 'includes/header.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Traveller') {
     header("Location: login.php");
     exit;
 }
+
+$page_title = 'Secure Booking Checkout';
+require_once 'includes/header.php';
+
 
 $traveller_id = (int)$_SESSION['user_id'];
 $error = '';

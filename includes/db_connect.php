@@ -1,6 +1,11 @@
 <?php
 // includes/db_connect.php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../config.php';
+
 
 // The $pdo variable is already created in config.php.
 // We can include some common utility functions here if needed.

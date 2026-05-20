@@ -1,23 +1,25 @@
 <?php
-$page_title = 'Edit Package';
 require_once 'includes/db_connect.php';
-require_once 'includes/header.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
     header("Location: login.php");
     exit;
 }
 
-$agency_id = $_SESSION['user_id'];
-$success_message = '';
-$error_message = '';
-
 if (!isset($_GET['id'])) {
     header("Location: agency_dashboard.php");
     exit;
 }
 
+$page_title = 'Edit Package';
+require_once 'includes/header.php';
+
+$agency_id = $_SESSION['user_id'];
+$success_message = '';
+$error_message = '';
+
 $package_id = (int)$_GET['id'];
+
 
 // 1. Fetch Package Details & Verify Ownership
 try {

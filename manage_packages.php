@@ -1,12 +1,14 @@
 <?php
-$page_title = 'Manage Packages';
 require_once 'includes/db_connect.php';
-require_once 'includes/header.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
     header("Location: login.php");
     exit;
 }
+
+$page_title = 'Manage Packages';
+require_once 'includes/header.php';
+
 
 $agency_id = $_SESSION['user_id'];
 $error_message = '';

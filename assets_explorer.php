@@ -1,12 +1,14 @@
 <?php
-$page_title = 'Asset Explorer';
 require_once 'includes/db_connect.php';
-require_once 'includes/header.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Traveller') {
     header("Location: login.php");
     exit;
 }
+
+$page_title = 'Asset Explorer';
+require_once 'includes/header.php';
+
 
 $active_tab = isset($_GET['tab']) ? trim($_GET['tab']) : 'flight';
 if (!in_array($active_tab, ['flight', 'accommodation', 'attraction', 'restaurant'])) {
