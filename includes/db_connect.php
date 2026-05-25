@@ -34,6 +34,20 @@ try {
     error_log("Notification schema generation failed: " . $e->getMessage());
 }
 
+// Automatically check and append ImageURL VARCHAR(500) column to core tables if missing
+$tablesWithImages = ['TravelPackage', 'Destination', 'Accommodation', 'Attraction', 'Restaurant'];
+foreach ($tablesWithImages as $table) {
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM `$table` LIKE 'ImageURL'");
+        if (!$stmt->fetch()) {
+            $pdo->exec("ALTER TABLE `$table` ADD COLUMN ImageURL VARCHAR(500) DEFAULT NULL");
+        }
+    } catch (PDOException $e) {
+        error_log("Failed to add ImageURL column to $table: " . $e->getMessage());
+    }
+}
+
+
 // Function to safely execute queries
 function executeQuery($pdo, $sql, $params = []) {
     try {

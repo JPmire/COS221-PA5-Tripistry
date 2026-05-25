@@ -184,7 +184,7 @@ try {
     <div class="bg-surface p-6 rounded-xl border border-outline-variant flex justify-between items-start shadow-sm hover:border-green-500/20 transition-all">
         <div>
             <div class="text-muted font-label-md text-label-md uppercase tracking-wider mb-2">Paid Revenue</div>
-            <div class="font-display-lg text-display-lg text-green-700 font-extrabold">$<?php echo number_format($stats['total_revenue'], 2); ?></div>
+            <div class="font-display-lg text-display-lg text-green-700 font-extrabold"><?php echo formatCurrency($stats['total_revenue']); ?></div>
         </div>
         <div class="bg-green-50 p-3 rounded-lg text-green-700 border border-green-100">
             <span class="material-symbols-outlined text-[24px]">payments</span>
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return ' ' + context.label + ': $' + context.raw.toLocaleString(undefined, {minimumFractionDigits: 2});
+                            return ' ' + context.label + ': R ' + context.raw.toLocaleString(undefined, {minimumFractionDigits: 2});
                         }
                     }
                 }
@@ -414,12 +414,12 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <?php echo htmlspecialchars($pkg['DurationDays']); ?> Days • Max Cap: <?php echo htmlspecialchars($pkg['MaxCapacity']); ?>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 font-bold text-text-main">$<?php echo number_format($pkg['BasePrice'], 2); ?></td>
+                                <td class="px-6 py-4 font-bold text-text-main"><?php echo formatCurrency($pkg['BasePrice']); ?></td>
                                 <td class="px-6 py-4 text-center font-bold text-secondary-indigo">
                                     <?php echo $pkg['TotalBookings']; ?>
                                 </td>
                                 <td class="px-6 py-4 font-extrabold text-green-700">
-                                    $<?php echo number_format($pkg['TotalRevenue'], 2); ?>
+                                    <?php echo formatCurrency($pkg['TotalRevenue']); ?>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center justify-center gap-1">
@@ -467,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                             <div class="text-xs text-muted italic line-clamp-2">Booked: <?php echo htmlspecialchars($booking['PackageTitle']); ?> (x<?php echo $booking['PartySize']; ?>)</div>
                             <div class="mt-2 flex justify-between items-center">
-                                <span class="text-sm font-bold text-accent">$<?php echo number_format($booking['TotalAmount'], 2); ?></span>
+                                <span class="text-sm font-bold text-accent"><?php echo formatCurrency($booking['TotalAmount']); ?></span>
                                 <?php if ($booking['PaymentStatus'] === 'Paid'): ?>
                                     <span class="px-2 py-0.5 bg-green-100 text-green-800 rounded text-[9px] uppercase font-bold tracking-wider"><?php echo htmlspecialchars($booking['PaymentStatus']); ?></span>
                                 <?php else: ?>

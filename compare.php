@@ -1,6 +1,7 @@
 <?php
 $page_title = 'Compare Packages';
 require_once 'includes/db_connect.php';
+require_once 'includes/image_service.php';
 require_once 'includes/header.php';
 
 // Retrieve package IDs from query parameters
@@ -133,7 +134,17 @@ if (!empty($package_ids)) {
 
             <!-- Package Columns -->
             <?php foreach ($packages as $pkg): ?>
-                <div class="bg-surface border border-outline-variant/50 rounded-card shadow-sm overflow-hidden flex flex-col justify-between hover:border-primary/30 transition-all duration-200">
+                <div class="bg-surface border border-outline-variant/50 rounded-card shadow-sm overflow-hidden flex flex-col justify-between hover:border-primary/30 transition-all duration-200 group">
+                    
+                    <?php 
+                        $pkgCover = !empty($pkg['ImageURL']) ? $pkg['ImageURL'] : ImageService::getPackageImage($pkg['Title'], $pkg['Description']);
+                    ?>
+                    <!-- Full-bleed visual cover header -->
+                    <div class="relative h-40 w-full overflow-hidden border-b border-outline-variant/20">
+                        <img src="<?php echo htmlspecialchars($pkgCover); ?>" alt="<?php echo htmlspecialchars($pkg['Title']); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent"></div>
+                        <div class="absolute top-3 left-3 bg-primary text-white text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded shadow-sm border border-white/10">Compare Option</div>
+                    </div>
                     
                     <!-- Card Top Header -->
                     <div class="p-6 bg-surface-container-low border-b border-outline-variant/20 relative">
@@ -146,7 +157,7 @@ if (!empty($package_ids)) {
                         </div>
                         <h2 class="text-xl font-heading font-semibold text-text-main mb-4 leading-snug h-[56px] overflow-hidden line-clamp-2"><?php echo htmlspecialchars($pkg['Title']); ?></h2>
                         <div class="flex items-baseline gap-1">
-                            <span class="text-2xl font-bold text-primary">$<?php echo number_format($pkg['BasePrice'], 2); ?></span>
+                            <span class="text-2xl font-bold text-primary font-mono"><?php echo formatCurrency($pkg['BasePrice']); ?></span>
                             <span class="text-xs text-muted font-medium">/ package</span>
                         </div>
                     </div>
@@ -220,7 +231,7 @@ if (!empty($package_ids)) {
                                             </div>
                                             <div class="flex justify-between items-center text-[10px] text-muted mt-0.5">
                                                 <span>Type: <?php echo htmlspecialchars($acc['Type']); ?></span>
-                                                <span class="font-semibold text-primary">$<?php echo number_format($acc['PricePerNight'], 2); ?>/night</span>
+                                                <span class="font-semibold text-primary"><?php echo formatCurrency($acc['PricePerNight']); ?>/night</span>
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
@@ -251,7 +262,7 @@ if (!empty($package_ids)) {
                                                     <span class="material-symbols-outlined text-[10px]">arrow_forward</span>
                                                     <span class="font-semibold text-text-main"><?php echo $fl['ArrAirport_Code']; ?></span>
                                                 </div>
-                                                <span class="text-primary font-bold">$<?php echo number_format($fl['Cost'], 2); ?></span>
+                                                <span class="text-primary font-bold"><?php echo formatCurrency($fl['Cost']); ?></span>
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
@@ -276,7 +287,7 @@ if (!empty($package_ids)) {
                                                 <p class="font-semibold text-text-main truncate"><?php echo htmlspecialchars($att['Name']); ?></p>
                                                 <span class="text-[9px] text-muted bg-surface border border-outline-variant/30 px-1 py-0.5 rounded"><?php echo htmlspecialchars($att['Category'] ?: 'Sightseeing'); ?></span>
                                             </div>
-                                            <span class="text-[10px] text-primary font-bold shrink-0">Fee: $<?php echo number_format($att['EntryFee'], 2); ?></span>
+                                            <span class="text-[10px] text-primary font-bold shrink-0">Fee: <?php echo formatCurrency($att['EntryFee']); ?></span>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
@@ -300,7 +311,7 @@ if (!empty($package_ids)) {
                                                 <p class="font-semibold text-text-main truncate"><?php echo htmlspecialchars($rest['Name']); ?></p>
                                                 <span class="text-[9px] text-muted bg-surface border border-outline-variant/30 px-1 py-0.5 rounded"><?php echo htmlspecialchars($rest['CuisineType'] ?: 'Local'); ?></span>
                                             </div>
-                                            <span class="text-[10px] text-accent font-bold shrink-0">Avg: $<?php echo number_format($rest['AverageCost'], 2); ?></span>
+                                            <span class="text-[10px] text-accent font-bold shrink-0">Avg: <?php echo formatCurrency($rest['AverageCost']); ?></span>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>

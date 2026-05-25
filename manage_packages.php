@@ -196,7 +196,7 @@ try {
                         <div class="grid grid-cols-2 gap-4 border-t border-b border-outline-variant/15 py-3 my-1">
                             <div>
                                 <span class="text-[10px] text-muted uppercase tracking-wider font-bold">Base Cost</span>
-                                <p class="text-sm font-bold text-primary mt-0.5">$<?php echo number_format($pkg['BasePrice'], 2); ?></p>
+                                <p class="text-sm font-bold text-primary mt-0.5"><?php echo formatCurrency($pkg['BasePrice']); ?></p>
                             </div>
                             <div>
                                 <span class="text-[10px] text-muted uppercase tracking-wider font-bold">Max Capacity</span>

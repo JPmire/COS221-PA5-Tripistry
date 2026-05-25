@@ -16,6 +16,10 @@ function getSidebarClass($pageName, $current_page, $aliasPages = []) {
         return "flex items-center gap-3 px-4.5 py-3 text-secondary hover:text-primary hover:bg-surface-container-low/70 hover:translate-x-1 transition-all duration-200 cursor-pointer rounded-xl";
     }
 }
+
+function formatCurrency($amount) {
+    return 'R ' . number_format((float)$amount, 2);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
