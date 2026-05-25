@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/db_connect.php';
+require_once 'includes/image_service.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'Traveller') {
     header("Location: login.php");
@@ -164,7 +165,7 @@ try {
                 <?php 
                     $total_spent = array_reduce($bookings, function($carry, $item) { return $carry + (float)$item['TotalAmount']; }, 0);
                 ?>
-                <div class="font-display-lg text-2xl font-heading font-bold text-text-main">$<?php echo number_format($total_spent, 2); ?></div>
+                <div class="font-display-lg text-2xl font-heading font-bold text-text-main"><?php echo formatCurrency($total_spent); ?></div>
             </div>
             <div class="bg-secondary-container p-3 rounded-xl">
                 <span class="material-symbols-outlined text-on-secondary-container">payments</span>
@@ -175,7 +176,7 @@ try {
         <div class="glass-card card-hover p-6 flex justify-between items-start">
             <div>
                 <div class="text-muted font-label-md text-xs uppercase tracking-widest mb-2 font-bold">Solo Travel Budget</div>
-                <div class="font-display-lg text-2xl font-heading font-bold text-text-main">$<?php echo number_format($traveller['SoloBudget'], 2); ?></div>
+                <div class="font-display-lg text-2xl font-heading font-bold text-text-main"><?php echo formatCurrency($traveller['SoloBudget']); ?></div>
             </div>
             <div class="bg-tertiary-container p-3 rounded-xl text-white flex items-center justify-center">
                 <span class="material-symbols-outlined">account_balance_wallet</span>
@@ -222,22 +223,31 @@ try {
             <?php else: ?>
                 <div class="flex flex-col gap-4">
                     <?php foreach ($recommendations as $pkg): ?>
-                        <div class="glass-card card-hover p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5">
+                        <?php 
+                            $recommendCover = !empty($pkg['ImageURL']) ? $pkg['ImageURL'] : ImageService::getPackageImage($pkg['Title'], $pkg['Description']);
+                        ?>
+                        <div class="glass-card card-hover p-4 flex flex-col md:flex-row items-center gap-5">
                             
+                            <!-- Wide Landscape Thumbnail -->
+                            <div class="w-full md:w-48 h-32 rounded-xl overflow-hidden flex-shrink-0 relative shadow-sm group">
+                                <img src="<?php echo htmlspecialchars($recommendCover); ?>" alt="<?php echo htmlspecialchars($pkg['Title']); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                                <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-green-500/90 backdrop-blur-md text-white rounded-lg text-[9px] font-extrabold tracking-wider uppercase flex items-center gap-1 border border-white/20 shadow-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                                    <?php echo $pkg['match_score']; ?>% Match
+                                </span>
+                            </div>
+
                             <!-- Package Core info -->
-                            <div class="flex-grow flex flex-col gap-2">
-                                <div class="flex items-center gap-2.5 flex-wrap">
-                                    <span class="px-2.5 py-0.5 bg-green-50 border border-green-200/50 text-green-700 rounded-full text-[10px] font-bold tracking-wider font-mono flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                        <?php echo $pkg['match_score']; ?>% Match
-                                    </span>
+                            <div class="flex-grow flex flex-col gap-1.5 min-w-0 w-full">
+                                <div class="flex items-center gap-2 flex-wrap">
                                     <span class="text-xs text-muted font-bold tracking-wider uppercase"><?php echo htmlspecialchars($pkg['AgencyName']); ?></span>
                                 </div>
                                 
-                                <h3 class="text-lg font-heading font-semibold text-text-main"><?php echo htmlspecialchars($pkg['Title']); ?></h3>
+                                <h3 class="text-lg font-heading font-semibold text-text-main group-hover:text-primary transition-colors truncate"><?php echo htmlspecialchars($pkg['Title']); ?></h3>
                                 
                                 <!-- Meta badges -->
-                                <div class="flex items-center gap-3 text-xs text-secondary mt-1 flex-wrap">
+                                <div class="flex items-center gap-3 text-xs text-secondary mt-1 flex-wrap font-medium">
                                     <span class="flex items-center gap-0.5"><span class="material-symbols-outlined text-[15px]">schedule</span> <?php echo $pkg['DurationDays']; ?> Days</span>
                                     <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
                                     <span class="flex items-center gap-0.5"><span class="material-symbols-outlined text-[15px] text-amber-500">star</span> <?php echo number_format($pkg['AgencyRating'], 1); ?></span>
@@ -245,7 +255,7 @@ try {
                                     <?php if (!empty($pkg['matched_tags'])): ?>
                                         <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
                                         <div class="flex items-center gap-1.5 flex-wrap">
-                                            <span class="text-[10px] text-muted italic">Matches:</span>
+                                            <span class="text-[10px] text-muted italic font-normal">Matches:</span>
                                             <?php foreach (array_slice($pkg['matched_tags'], 0, 2) as $tag): ?>
                                                 <span class="px-1.5 py-0.2 bg-primary/5 text-primary text-[10px] rounded border border-primary/10 font-bold"><?php echo htmlspecialchars($tag); ?></span>
                                             <?php endforeach; ?>
@@ -255,12 +265,12 @@ try {
                             </div>
 
                             <!-- Score Visual & CTA -->
-                            <div class="shrink-0 flex items-center gap-5 w-full sm:w-auto border-t sm:border-t-0 pt-4 sm:pt-0 border-outline-variant/30 justify-between sm:justify-end">
-                                <div class="text-right sm:pr-4">
+                            <div class="shrink-0 flex items-center gap-4 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 border-outline-variant/30 justify-between md:justify-end">
+                                <div class="text-right md:pr-4">
                                     <span class="text-[10px] text-muted block mb-0.5 uppercase tracking-wider font-bold">Est Price</span>
-                                    <span class="text-xl font-heading font-bold text-primary">$<?php echo number_format($pkg['BasePrice'], 2); ?></span>
+                                    <span class="text-xl font-heading font-bold text-primary font-mono"><?php echo formatCurrency($pkg['BasePrice']); ?></span>
                                 </div>
-                                <a href="package_detail.php?id=<?php echo $pkg['PackageID']; ?>" class="btn-premium-secondary h-[40px] px-5 text-xs flex items-center gap-1.5">
+                                <a href="package_detail.php?id=<?php echo $pkg['PackageID']; ?>" class="btn-premium px-5 h-[40px] text-xs flex items-center gap-1.5">
                                     View Details
                                     <span class="material-symbols-outlined text-xs">arrow_forward</span>
                                 </a>
@@ -361,7 +371,7 @@ try {
                                 <td class="px-6 py-4 text-secondary text-xs">
                                     <span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs">calendar_month</span> <?php echo date('M d, Y', strtotime($booking['StartDate'])) . ' - ' . date('M d, Y', strtotime($booking['EndDate'])); ?></span>
                                 </td>
-                                <td class="px-6 py-4 font-bold text-text-main font-mono">$<?php echo number_format($booking['TotalAmount'], 2); ?></td>
+                                <td class="px-6 py-4 font-bold text-text-main font-mono"><?php echo formatCurrency($booking['TotalAmount']); ?></td>
                                 <td class="px-6 py-4">
                                     <?php if ($booking['PaymentStatus'] === 'Paid'): ?>
                                         <span class="px-3 py-1 bg-green-50 border border-green-200 text-green-700 rounded-full text-[10px] font-bold uppercase tracking-wider">Paid</span>

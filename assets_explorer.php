@@ -222,7 +222,7 @@ function getPackagesForAsset($pdo, $type, $asset_id) {
                     $asset_id = (int)$item['FlightID'];
                     $title_text = htmlspecialchars($item['Airline']);
                     $subtitle_text = "Flight #" . htmlspecialchars($item['FlightNum']);
-                    $stat_box = '<div class="text-right"><span class="text-[9px] text-muted block uppercase tracking-wider font-bold">Fare Cost</span><span class="font-heading font-bold text-primary text-sm font-mono">$'.number_format($item['Cost'], 2).'</span></div>';
+                    $stat_box = '<div class="text-right"><span class="text-[9px] text-muted block uppercase tracking-wider font-bold">Fare Cost</span><span class="font-heading font-bold text-primary text-sm font-mono">' . formatCurrency($item['Cost']) . '</span></div>';
                     $extra_details = '
                         <div class="flex justify-between items-center bg-background-light p-2.5 rounded-lg border border-outline-variant/20 text-[11px] font-mono text-secondary">
                             <div>
@@ -247,21 +247,21 @@ function getPackagesForAsset($pdo, $type, $asset_id) {
                     }
                     $stars .= '</div>';
                     
-                    $stat_box = '<div class="text-right"><span class="text-[9px] text-muted block uppercase tracking-wider font-bold">Rate</span><span class="font-heading font-bold text-primary text-sm font-mono">$'.number_format($item['PricePerNight'], 0).'/nt</span>' . $stars . '</div>';
+                    $stat_box = '<div class="text-right"><span class="text-[9px] text-muted block uppercase tracking-wider font-bold">Rate</span><span class="font-heading font-bold text-primary text-sm font-mono">' . formatCurrency($item['PricePerNight']) . '/nt</span>' . $stars . '</div>';
                     $extra_details = '<p class="text-[11px] text-secondary flex items-start gap-1"><span class="material-symbols-outlined text-[14px] text-primary shrink-0">location_on</span>' . htmlspecialchars($item['Address_Street'] . ', ' . $item['Address_City'] . ' ' . $item['Address_Zip']) . '</p>';
                     
                 } elseif ($active_tab === 'attraction') {
                     $asset_id = (int)$item['AttractionID'];
                     $title_text = htmlspecialchars($item['Name']);
                     $subtitle_text = htmlspecialchars($item['Category']);
-                    $stat_box = '<div class="text-right"><span class="text-[9px] text-muted block uppercase tracking-wider font-bold">Entry Fee</span><span class="font-heading font-bold text-primary text-sm font-mono">' . ($item['EntryFee'] > 0 ? '$'.number_format($item['EntryFee'], 0) : 'FREE') . '</span></div>';
+                    $stat_box = '<div class="text-right"><span class="text-[9px] text-muted block uppercase tracking-wider font-bold">Entry Fee</span><span class="font-heading font-bold text-primary text-sm font-mono">' . ($item['EntryFee'] > 0 ? formatCurrency($item['EntryFee']) : 'FREE') . '</span></div>';
                     $extra_details = '<p class="text-[11px] text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-primary">pin_drop</span> Coordinates: ' . number_format($item['Coordinates_Lat'], 4) . ', ' . number_format($item['Coordinates_Long'], 4) . '</p>';
                     
                 } elseif ($active_tab === 'restaurant') {
                     $asset_id = (int)$item['RestaurantID'];
                     $title_text = htmlspecialchars($item['Name']);
                     $subtitle_text = htmlspecialchars($item['CuisineType']) . " Cuisine";
-                    $stat_box = '<div class="text-right"><span class="text-[9px] text-muted block uppercase tracking-wider font-bold">Avg Dining Cost</span><span class="font-heading font-bold text-primary text-sm font-mono">$'.number_format($item['AverageCost'], 0).'</span></div>';
+                    $stat_box = '<div class="text-right"><span class="text-[9px] text-muted block uppercase tracking-wider font-bold">Avg Dining Cost</span><span class="font-heading font-bold text-primary text-sm font-mono">' . formatCurrency($item['AverageCost']) . '</span></div>';
                     $extra_details = '<p class="text-[11px] text-secondary flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-primary">restaurant</span> Dinner / Lunch Cuisine Service</p>';
                 }
                 
