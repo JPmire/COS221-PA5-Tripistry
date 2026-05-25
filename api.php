@@ -497,8 +497,8 @@ class TripistryAPI {
             $this->sendResponse("error", "Missing destination name or country.", 400);
         }
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO Destination (Name, Country, Region) VALUES (?, ?, ?)");
-            $stmt->execute([trim($data['name']), trim($data['country']), trim($data['region'] ?? '')]);
+            $stmt = $this->pdo->prepare("INSERT INTO Destination (Name, Country, Region, ImageURL) VALUES (?, ?, ?, ?)");
+            $stmt->execute([trim($data['name']), trim($data['country']), trim($data['region'] ?? ''), trim($data['imageUrl'] ?? null)]);
             $this->sendResponse("success", ["id" => $this->pdo->lastInsertId(), "message" => "Destination added!"]);
         } catch (\PDOException $e) {
             $this->sendResponse("error", "Failed to add destination: " . $e->getMessage(), 500);
@@ -540,7 +540,7 @@ class TripistryAPI {
             $this->sendResponse("error", "Missing required accommodation details.", 400);
         }
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO Accommodation (Name, Type, PricePerNight, StarRating, Address_Street, Address_City, Address_Zip) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $this->pdo->prepare("INSERT INTO Accommodation (Name, Type, PricePerNight, StarRating, Address_Street, Address_City, Address_Zip, ImageURL) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
                 trim($data['name']),
                 $accommType,
@@ -548,7 +548,8 @@ class TripistryAPI {
                 !empty($data['starRating']) ? (int)$data['starRating'] : null,
                 trim($data['addressStreet'] ?? ''),
                 trim($data['addressCity'] ?? ''),
-                trim($data['addressZip'] ?? '')
+                trim($data['addressZip'] ?? ''),
+                trim($data['imageUrl'] ?? null)
             ]);
             $this->sendResponse("success", ["id" => $this->pdo->lastInsertId(), "message" => "Accommodation added!"]);
         } catch (\PDOException $e) {
@@ -564,11 +565,12 @@ class TripistryAPI {
             $this->sendResponse("error", "Missing attraction name.", 400);
         }
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO Attraction (Name, Category, EntryFee) VALUES (?, ?, ?)");
+            $stmt = $this->pdo->prepare("INSERT INTO Attraction (Name, Category, EntryFee, ImageURL) VALUES (?, ?, ?, ?)");
             $stmt->execute([
                 trim($data['name']),
                 trim($data['category'] ?? ''),
-                !empty($data['entryFee']) ? (float)$data['entryFee'] : 0.00
+                !empty($data['entryFee']) ? (float)$data['entryFee'] : 0.00,
+                trim($data['imageUrl'] ?? null)
             ]);
             $this->sendResponse("success", ["id" => $this->pdo->lastInsertId(), "message" => "Attraction added!"]);
         } catch (\PDOException $e) {
@@ -584,11 +586,12 @@ class TripistryAPI {
             $this->sendResponse("error", "Missing restaurant name.", 400);
         }
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO Restaurant (Name, CuisineType, AverageCost) VALUES (?, ?, ?)");
+            $stmt = $this->pdo->prepare("INSERT INTO Restaurant (Name, CuisineType, AverageCost, ImageURL) VALUES (?, ?, ?, ?)");
             $stmt->execute([
                 trim($data['name']),
                 trim($data['cuisineType'] ?? ''),
-                !empty($data['averageCost']) ? (float)$data['averageCost'] : 0.00
+                !empty($data['averageCost']) ? (float)$data['averageCost'] : 0.00,
+                trim($data['imageUrl'] ?? null)
             ]);
             $this->sendResponse("success", ["id" => $this->pdo->lastInsertId(), "message" => "Restaurant added!"]);
         } catch (\PDOException $e) {

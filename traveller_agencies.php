@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $sentimentScore = 0.00; 
 
         if (!empty($apiKey)) {
-            $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $apiKey;
+            $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" . $apiKey;
             
             $prompt = "Analyze the sentiment of the following travel agency review. Return ONLY a valid JSON object with a single key 'sentiment_score' containing a float from -1.00 (very negative) to 1.00 (very positive). Review: " . $comment;
 

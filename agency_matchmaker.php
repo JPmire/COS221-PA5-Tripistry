@@ -130,7 +130,7 @@ try {
     ";
     
     if ($search !== '') {
-        $sql .= " AND (t.FirstName LIKE :search OR t.LastName LIKE :search OR u.Email LIKE :search)";
+        $sql .= " AND (t.FirstName LIKE :search1 OR t.LastName LIKE :search2 OR u.Email LIKE :search3)";
     }
     
     $sql .= " GROUP BY t.UserID, t.FirstName, t.LastName, t.DOB, t.SoloBudget, u.Email";
@@ -155,7 +155,9 @@ try {
         ':agency_id_main' => $agency_id
     ];
     if ($search !== '') {
-        $params[':search'] = '%' . $search . '%';
+        $params[':search1'] = '%' . $search . '%';
+        $params[':search2'] = '%' . $search . '%';
+        $params[':search3'] = '%' . $search . '%';
     }
     $stmt->execute($params);
     $customers = $stmt->fetchAll();

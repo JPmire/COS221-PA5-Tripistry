@@ -334,39 +334,34 @@ if ($package) {
                     </h3>
                     <p class="text-xs text-secondary -mt-3">Link associated destinations, hotels, flights, attractions, and restaurants to this itinerary package.</p>
 
-                    <!-- B0. Live Travel API Discovery Hub -->
-                    <div class="border border-primary/30 rounded-lg overflow-hidden glass-card shadow-md">
-                        <div class="px-5 py-3 border-b border-primary/20 bg-primary/5 flex justify-between items-center cursor-pointer select-none" onclick="toggleAccordion('acc-live-api')">
-                            <span class="font-bold text-primary flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary pulse-animation">travel_explore</span>
-                                Live Travel API Discovery & Import Hub
-                            </span>
-                            <span id="acc-live-api-icon" class="material-symbols-outlined text-primary">expand_more</span>
+                    <!-- Search & Import Travel Places -->
+                    <div class="border border-outline-variant rounded-lg overflow-hidden bg-surface shadow-sm p-5 flex flex-col gap-4">
+                        <h4 class="font-heading font-semibold text-text-main flex items-center gap-2 border-b border-outline-variant/30 pb-2">
+                            <span class="material-symbols-outlined text-primary pulse-animation">travel_explore</span>
+                            Search & Import Travel Places
+                        </h4>
+                        <p class="text-xs text-secondary">
+                            Search for any city in the world to instantly find, import, and link verified local destinations, hotels, attractions, and restaurants directly to your package itinerary.
+                        </p>
+                        
+                        <div class="flex gap-3">
+                            <div class="flex-grow">
+                                <input type="text" id="live-api-search-city" class="input-field h-[40px] text-sm" placeholder="Search City (e.g. Cape Town, Rome, London, Paris, Tokyo)">
+                            </div>
+                            <button type="button" class="btn h-[40px] px-6 text-xs font-bold uppercase tracking-wider" onclick="searchLiveAPI()">
+                                Find Places
+                            </button>
                         </div>
-                        <div id="acc-live-api" class="p-5 flex flex-col gap-4 hidden">
-                            <p class="text-xs text-secondary">
-                                Search live global datasets (via OpenTripMap & simulated aviation lines) to immediately seed your local relational cache, auto-plot coordinates, and import components directly into this package!
-                            </p>
-                            
-                            <div class="flex gap-3">
-                                <div class="flex-grow">
-                                    <input type="text" id="live-api-search-city" class="input-field h-[40px] text-sm" placeholder="Search City (e.g. Cape Town, Rome, London, Paris, Tokyo)">
-                                </div>
-                                <button type="button" class="btn h-[40px] px-6 text-xs font-bold uppercase tracking-wider" onclick="searchLiveAPI()">
-                                    Discover Places
-                                </button>
-                            </div>
 
-                            <!-- Search Loading / Status -->
-                            <div id="live-api-status" class="hidden text-xs text-primary font-semibold flex items-center gap-1.5">
-                                <span class="material-symbols-outlined text-[16px] animate-spin">sync</span>
-                                Fetching live coordinates and nearby assets...
-                            </div>
+                        <!-- Search Loading / Status -->
+                        <div id="live-api-status" class="hidden text-xs text-primary font-semibold flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px] animate-spin">sync</span>
+                            Searching locations and assets...
+                        </div>
 
-                            <!-- API Discoveries Grid Display -->
-                            <div id="live-api-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto hidden">
-                                <!-- Discovered Items Rendered Dynamically -->
-                            </div>
+                        <!-- Discoveries Grid Display -->
+                        <div id="live-api-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto hidden">
+                            <!-- Discovered Items Rendered Dynamically -->
                         </div>
                     </div>
 
@@ -641,6 +636,10 @@ if ($package) {
                 <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Region (Optional)</label>
                 <input type="text" id="m-dest-region" class="input-field h-[40px] text-sm" placeholder="e.g. Europe">
             </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Image URL (Optional)</label>
+                <input type="url" id="m-dest-image" class="input-field h-[40px] text-sm" placeholder="https://example.com/image.jpg">
+            </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeQuickModal('dest')">Cancel</button>
                 <button type="submit" class="bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:opacity-95 transition-opacity">Add & Select</button>
@@ -676,6 +675,10 @@ if ($package) {
             <div>
                 <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Star Rating (1-5)</label>
                 <input type="number" id="m-accomm-stars" min="1" max="5" class="input-field h-[40px] text-sm" placeholder="e.g. 4">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Image URL (Optional)</label>
+                <input type="url" id="m-accomm-image" class="input-field h-[40px] text-sm" placeholder="https://example.com/image.jpg">
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeQuickModal('accomm')">Cancel</button>
@@ -749,6 +752,10 @@ if ($package) {
                 <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Entry Fee (R)</label>
                 <input type="number" id="m-attr-fee" min="0" step="0.01" class="input-field h-[40px] text-sm" placeholder="0.00">
             </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Image URL (Optional)</label>
+                <input type="url" id="m-attr-image" class="input-field h-[40px] text-sm" placeholder="https://example.com/image.jpg">
+            </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeQuickModal('attraction')">Cancel</button>
                 <button type="submit" class="bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:opacity-95 transition-opacity">Add & Select</button>
@@ -773,6 +780,10 @@ if ($package) {
             <div>
                 <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Average Cost per Meal (R)</label>
                 <input type="number" id="m-rest-cost" min="0" step="0.01" class="input-field h-[40px] text-sm" placeholder="0.00">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Image URL (Optional)</label>
+                <input type="url" id="m-rest-image" class="input-field h-[40px] text-sm" placeholder="https://example.com/image.jpg">
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeQuickModal('restaurant')">Cancel</button>
@@ -1163,11 +1174,13 @@ if ($package) {
             payload.name = document.getElementById('m-dest-name').value;
             payload.country = document.getElementById('m-dest-country').value;
             payload.region = document.getElementById('m-dest-region').value;
+            payload.imageUrl = document.getElementById('m-dest-image').value;
         } else if (componentName === 'Accommodation') {
             payload.name = document.getElementById('m-accomm-name').value;
             payload.accommType = document.getElementById('m-accomm-type').value;
             payload.pricePerNight = parseFloat(document.getElementById('m-accomm-price').value);
             payload.starRating = parseInt(document.getElementById('m-accomm-stars').value);
+            payload.imageUrl = document.getElementById('m-accomm-image').value;
         } else if (componentName === 'Flight') {
             payload.airline = document.getElementById('m-flight-airline').value;
             payload.flightNum = document.getElementById('m-flight-num').value;
@@ -1180,10 +1193,12 @@ if ($package) {
             payload.name = document.getElementById('m-attr-name').value;
             payload.category = document.getElementById('m-attr-category').value;
             payload.entryFee = parseFloat(document.getElementById('m-attr-fee').value);
+            payload.imageUrl = document.getElementById('m-attr-image').value;
         } else if (componentName === 'Restaurant') {
             payload.name = document.getElementById('m-rest-name').value;
             payload.cuisineType = document.getElementById('m-rest-cuisine').value;
             payload.averageCost = parseFloat(document.getElementById('m-rest-cost').value);
+            payload.imageUrl = document.getElementById('m-rest-image').value;
         }
 
         try {
