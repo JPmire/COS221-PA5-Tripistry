@@ -9,39 +9,19 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
 $page_title = 'Traveller Insights';
 require_once 'includes/header.php';
 
-// Helper to mask email addresses of prospective leads for traveler privacy protection
-function maskEmail($email) {
-    $parts = explode('@', $email);
-    if (count($parts) === 2) {
-        $name = $parts[0];
-        $domain = $parts[1];
-        if (strlen($name) > 2) {
-            return substr($name, 0, 1) . str_repeat('*', strlen($name) - 2) . substr($name, -1) . '@' . $domain;
-        }
-        return str_repeat('*', strlen($name)) . '@' . $domain;
-    }
-    return $email;
-}
-
 $agency_id = $_SESSION['user_id'];
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $sort = isset($_GET['sort']) ? trim($_GET['sort']) : '';
-$tab = isset($_GET['tab']) ? trim($_GET['tab']) : 'customers'; // customers or leads
 
 $success_message = '';
 $error_message = '';
-
-// Handle visual Pitch/Invite proposal actions for prospective leads (Deactivated for traveler privacy)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'pitch_lead') {
-    $error_message = "Direct pitching of unsolicited campaign offers is disabled to protect traveler privacy and comply with ethical marketing standards.";
-}
 
 // Fetch agency lifetime metrics for the high-level dashboard counters
 $summary_stats = [
     'total_unique_customers' => 0,
     'lifetime_revenue' => 0.00,
     'total_bookings' => 0,
-    'average_lead_budget' => 0.00
+    'average_customer_budget' => 0.00
 ];
 
 try {
@@ -75,11 +55,11 @@ try {
     $stmt->execute([$agency_id]);
     $summary_stats['total_bookings'] = (int)$stmt->fetchColumn();
 
-    // 4. Average prospective lead budget
+    // 4. Average Customer Budget
     $stmt = $pdo->prepare("
         SELECT COALESCE(AVG(SoloBudget), 0.00) 
         FROM Traveller t
-        WHERE t.UserID NOT IN (
+        WHERE t.UserID IN (
             SELECT DISTINCT b.TravellerID
             FROM Booking b
             JOIN TravelPackage tp ON b.Trip_PackageID = tp.PackageID
@@ -87,7 +67,7 @@ try {
         )
     ");
     $stmt->execute([$agency_id]);
-    $summary_stats['average_lead_budget'] = (float)$stmt->fetchColumn();
+    $summary_stats['average_customer_budget'] = (float)$stmt->fetchColumn();
 
 } catch (\PDOException $e) {
     $error_message = "Failed to calculate summary metrics: " . $e->getMessage();
@@ -111,122 +91,76 @@ try {
 
 // FETCH CUSTOMERS
 $customers = [];
-if ($tab === 'customers') {
-    try {
-        $sql = "
-            SELECT t.UserID AS TravellerID, t.FirstName, t.LastName, t.DOB, t.SoloBudget, u.Email,
-                   COUNT(DISTINCT b.BookingID) AS TotalBookings,
-                   COALESCE(SUM(CASE WHEN b.PaymentStatus = 'Paid' THEN b.TotalAmount ELSE 0 END), 0) AS LifetimeContribution,
-                   
-                   (SELECT tp2.Title 
-                    FROM Booking b2 
-                    JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
-                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub1 
-                    ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestPackageTitle,
-                    
-                   (SELECT gt2.StartDate 
-                    FROM Booking b2 
-                    JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
-                    JOIN GroupTrip gt2 ON (b2.Trip_PackageID = gt2.PackageID AND b2.Trip_TripDateID = gt2.TripDateID)
-                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub2 
-                    ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestStartDate,
-                    
-                   (SELECT gt2.EndDate 
-                    FROM Booking b2 
-                    JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
-                    JOIN GroupTrip gt2 ON (b2.Trip_PackageID = gt2.PackageID AND b2.Trip_TripDateID = gt2.TripDateID)
-                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub3 
-                    ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestEndDate,
-                    
-                   (SELECT b2.PaymentStatus 
-                    FROM Booking b2 
-                    JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
-                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub4 
-                    ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestPaymentStatus
-            FROM Booking b
-            JOIN Traveller t ON b.TravellerID = t.UserID
-            JOIN User u ON t.UserID = u.UserID
-            JOIN TravelPackage tp ON b.Trip_PackageID = tp.PackageID
-            WHERE tp.AgencyID = :agency_id_main
-        ";
-        
-        if ($search !== '') {
-            $sql .= " AND (t.FirstName LIKE :search OR t.LastName LIKE :search OR u.Email LIKE :search)";
-        }
-        
-        $sql .= " GROUP BY t.UserID, t.FirstName, t.LastName, t.DOB, t.SoloBudget, u.Email";
-        
-        // Sort logic
-        if ($sort === 'revenue_desc') {
-            $sql .= " ORDER BY LifetimeContribution DESC";
-        } elseif ($sort === 'bookings_desc') {
-            $sql .= " ORDER BY TotalBookings DESC";
-        } elseif ($sort === 'name_desc') {
-            $sql .= " ORDER BY t.FirstName DESC, t.LastName DESC";
-        } else {
-            $sql .= " ORDER BY t.FirstName ASC, t.LastName ASC"; // default alphabetical
-        }
-        
-        $stmt = $pdo->prepare($sql);
-        $params = [
-            ':agency_id_sub1' => $agency_id,
-            ':agency_id_sub2' => $agency_id,
-            ':agency_id_sub3' => $agency_id,
-            ':agency_id_sub4' => $agency_id,
-            ':agency_id_main' => $agency_id
-        ];
-        if ($search !== '') {
-            $params[':search'] = '%' . $search . '%';
-        }
-        $stmt->execute($params);
-        $customers = $stmt->fetchAll();
-    } catch (\PDOException $e) {
-        $error_message = "Error fetching active customer portfolio: " . $e->getMessage();
+try {
+    $sql = "
+        SELECT t.UserID AS TravellerID, t.FirstName, t.LastName, t.DOB, t.SoloBudget, u.Email,
+               COUNT(DISTINCT b.BookingID) AS TotalBookings,
+               COALESCE(SUM(CASE WHEN b.PaymentStatus = 'Paid' THEN b.TotalAmount ELSE 0 END), 0) AS LifetimeContribution,
+               
+               (SELECT tp2.Title 
+                FROM Booking b2 
+                JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
+                WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub1 
+                ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestPackageTitle,
+                
+               (SELECT gt2.StartDate 
+                FROM Booking b2 
+                JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
+                JOIN GroupTrip gt2 ON (b2.Trip_PackageID = gt2.PackageID AND b2.Trip_TripDateID = gt2.TripDateID)
+                WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub2 
+                ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestStartDate,
+                
+               (SELECT gt2.EndDate 
+                FROM Booking b2 
+                JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
+                JOIN GroupTrip gt2 ON (b2.Trip_PackageID = gt2.PackageID AND b2.Trip_TripDateID = gt2.TripDateID)
+                WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub3 
+                ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestEndDate,
+                
+               (SELECT b2.PaymentStatus 
+                FROM Booking b2 
+                JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
+                WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub4 
+                ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestPaymentStatus
+        FROM Booking b
+        JOIN Traveller t ON b.TravellerID = t.UserID
+        JOIN User u ON t.UserID = u.UserID
+        JOIN TravelPackage tp ON b.Trip_PackageID = tp.PackageID
+        WHERE tp.AgencyID = :agency_id_main
+    ";
+    
+    if ($search !== '') {
+        $sql .= " AND (t.FirstName LIKE :search OR t.LastName LIKE :search OR u.Email LIKE :search)";
     }
-} else {
-    // FETCH LEADS
-    try {
-        $sql = "
-            SELECT t.UserID AS TravellerID, t.FirstName, t.LastName, t.DOB, t.SoloBudget, u.Email,
-                   (SELECT GROUP_CONCAT(tp.Preference ORDER BY tp.Preference ASC SEPARATOR ', ') 
-                    FROM Traveller_Preferences tp 
-                    WHERE tp.UserID = t.UserID) AS Preferences
-            FROM Traveller t
-            JOIN User u ON t.UserID = u.UserID
-            WHERE u.AccountStatus = 'Active'
-              AND t.UserID NOT IN (
-                  SELECT DISTINCT b.TravellerID
-                  FROM Booking b
-                  JOIN TravelPackage tp ON b.Trip_PackageID = tp.PackageID
-                  WHERE tp.AgencyID = :agency_id
-              )
-        ";
-        
-        if ($search !== '') {
-            $sql .= " AND (t.FirstName LIKE :search OR t.LastName LIKE :search OR u.Email LIKE :search)";
-        }
-        
-        // Sort logic for leads
-        if ($sort === 'budget_desc') {
-            $sql .= " ORDER BY t.SoloBudget DESC";
-        } elseif ($sort === 'budget_asc') {
-            $sql .= " ORDER BY t.SoloBudget ASC";
-        } elseif ($sort === 'name_desc') {
-            $sql .= " ORDER BY t.FirstName DESC, t.LastName DESC";
-        } else {
-            $sql .= " ORDER BY t.FirstName ASC, t.LastName ASC"; // default alphabetical
-        }
-        
-        $stmt = $pdo->prepare($sql);
-        $params = [':agency_id' => $agency_id];
-        if ($search !== '') {
-            $params[':search'] = '%' . $search . '%';
-        }
-        $stmt->execute($params);
-        $leads = $stmt->fetchAll();
-    } catch (\PDOException $e) {
-        $error_message = "Error fetching prospective system leads: " . $e->getMessage();
+    
+    $sql .= " GROUP BY t.UserID, t.FirstName, t.LastName, t.DOB, t.SoloBudget, u.Email";
+    
+    // Sort logic
+    if ($sort === 'revenue_desc') {
+        $sql .= " ORDER BY LifetimeContribution DESC";
+    } elseif ($sort === 'bookings_desc') {
+        $sql .= " ORDER BY TotalBookings DESC";
+    } elseif ($sort === 'name_desc') {
+        $sql .= " ORDER BY t.FirstName DESC, t.LastName DESC";
+    } else {
+        $sql .= " ORDER BY t.FirstName ASC, t.LastName ASC"; // default alphabetical
     }
+    
+    $stmt = $pdo->prepare($sql);
+    $params = [
+        ':agency_id_sub1' => $agency_id,
+        ':agency_id_sub2' => $agency_id,
+        ':agency_id_sub3' => $agency_id,
+        ':agency_id_sub4' => $agency_id,
+        ':agency_id_main' => $agency_id
+    ];
+    if ($search !== '') {
+        $params[':search'] = '%' . $search . '%';
+    }
+    $stmt->execute($params);
+    $customers = $stmt->fetchAll();
+} catch (\PDOException $e) {
+    $error_message = "Error fetching active customer portfolio: " . $e->getMessage();
 }
 ?>
 
@@ -292,22 +226,19 @@ if ($tab === 'customers') {
 
         <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/60 p-5 flex items-center gap-4 hover:shadow-md transition-all">
             <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-                <span class="material-symbols-outlined text-2xl">campaign</span>
+                <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
             </div>
             <div>
-                <p class="text-xs font-bold text-secondary uppercase tracking-wider">Avg Lead Budget</p>
-                <h3 class="text-2xl font-bold text-text-main mt-0.5 font-mono"><?php echo formatCurrency($summary_stats['average_lead_budget']); ?></h3>
+                <p class="text-xs font-bold text-secondary uppercase tracking-wider">Avg Cust Budget</p>
+                <h3 class="text-2xl font-bold text-text-main mt-0.5 font-mono"><?php echo formatCurrency($summary_stats['average_customer_budget']); ?></h3>
             </div>
         </div>
     </div>
 
-    <!-- Interface Tabs & Filters Panel -->
+    <!-- Interface & Filters Panel -->
     <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/60 p-5 flex flex-col gap-5">
         <!-- Snappy Search and Filter Form -->
         <form method="GET" class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 pb-4 border-b border-outline-variant/40">
-            <!-- Hidden context parameters -->
-            <input type="hidden" name="tab" value="<?php echo htmlspecialchars($tab); ?>">
-
             <!-- Search control -->
             <div class="relative flex-grow max-w-xl">
                 <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" 
@@ -321,23 +252,16 @@ if ($tab === 'customers') {
                 <span class="text-xs font-bold text-secondary uppercase tracking-wider whitespace-nowrap">Sort:</span>
                 <select name="sort" onchange="this.form.submit()" 
                         class="input-field h-[40px] w-[180px] py-0 pr-8 text-xs font-bold rounded-lg border border-outline-variant">
-                    <?php if ($tab === 'customers'): ?>
-                        <option value="" <?php echo $sort === '' ? 'selected' : ''; ?>>Alphabetical (A-Z)</option>
-                        <option value="name_desc" <?php echo $sort === 'name_desc' ? 'selected' : ''; ?>>Alphabetical (Z-A)</option>
-                        <option value="revenue_desc" <?php echo $sort === 'revenue_desc' ? 'selected' : ''; ?>>Lifetime Spent</option>
-                        <option value="bookings_desc" <?php echo $sort === 'bookings_desc' ? 'selected' : ''; ?>>Booking Count</option>
-                    <?php else: ?>
-                        <option value="" <?php echo $sort === '' ? 'selected' : ''; ?>>Alphabetical (A-Z)</option>
-                        <option value="name_desc" <?php echo $sort === 'name_desc' ? 'selected' : ''; ?>>Alphabetical (Z-A)</option>
-                        <option value="budget_desc" <?php echo $sort === 'budget_desc' ? 'selected' : ''; ?>>Solo Budget (High-Low)</option>
-                        <option value="budget_asc" <?php echo $sort === 'budget_asc' ? 'selected' : ''; ?>>Solo Budget (Low-High)</option>
-                    <?php endif; ?>
+                    <option value="" <?php echo $sort === '' ? 'selected' : ''; ?>>Alphabetical (A-Z)</option>
+                    <option value="name_desc" <?php echo $sort === 'name_desc' ? 'selected' : ''; ?>>Alphabetical (Z-A)</option>
+                    <option value="revenue_desc" <?php echo $sort === 'revenue_desc' ? 'selected' : ''; ?>>Lifetime Spent</option>
+                    <option value="bookings_desc" <?php echo $sort === 'bookings_desc' ? 'selected' : ''; ?>>Booking Count</option>
                 </select>
 
                 <button type="submit" class="h-[40px] px-4 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary-dark transition-colors shadow">Apply</button>
                 
                 <?php if ($search !== '' || $sort !== ''): ?>
-                    <a href="?tab=<?php echo $tab; ?>" class="text-xs text-primary font-bold hover:underline flex items-center gap-0.5">
+                    <a href="agency_matchmaker.php" class="text-xs text-primary font-bold hover:underline flex items-center gap-0.5">
                         <span class="material-symbols-outlined text-xs">restart_alt</span>
                         Reset
                     </a>
@@ -345,30 +269,7 @@ if ($tab === 'customers') {
             </div>
         </form>
 
-        <!-- Segmented Tab bar selectors -->
-        <div class="flex border-b border-outline-variant/30 gap-6">
-            <a href="?tab=customers&search=<?php echo urlencode($search); ?>" 
-               class="pb-3 text-sm font-bold relative transition-colors flex items-center gap-2 <?php echo $tab === 'customers' ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary'; ?>">
-                <span class="material-symbols-outlined text-[18px]">verified_user</span>
-                Active Customer Portfolio
-                <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-primary/10 text-primary">
-                    <?php echo $tab === 'customers' ? count($customers) : $summary_stats['total_unique_customers']; ?>
-                </span>
-            </a>
-
-            <a href="?tab=leads&search=<?php echo urlencode($search); ?>" 
-               class="pb-3 text-sm font-bold relative transition-colors flex items-center gap-2 <?php echo $tab === 'leads' ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-primary'; ?>">
-                <span class="material-symbols-outlined text-[18px]">group_add</span>
-                Prospective Platform Leads
-                <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-100 text-amber-800">
-                    <?php echo $tab === 'leads' ? count($leads) : 'Find Leads'; ?>
-                </span>
-            </a>
-        </div>
-
-        <!-- Render Target Directory lists based on selected view -->
-        <?php if ($tab === 'customers'): ?>
-            <!-- ACTIVE CUSTOMERS VIEW -->
+        <!-- ACTIVE CUSTOMERS VIEW -->
             <?php if (empty($customers)): ?>
                 <div class="py-16 text-center text-muted flex flex-col items-center justify-center gap-3">
                     <span class="material-symbols-outlined text-5xl opacity-35">contact_phone</span>
@@ -465,131 +366,6 @@ if ($tab === 'customers') {
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
-
-        <?php else: ?>
-            <!-- PROSPECTIVE PLATFORM LEADS VIEW -->
-            <?php if (empty($leads)): ?>
-                <div class="py-16 text-center text-muted flex flex-col items-center justify-center gap-3">
-                    <span class="material-symbols-outlined text-5xl opacity-35">group_add</span>
-                    <p class="text-sm font-bold">No prospective leads found.</p>
-                    <p class="text-xs">Verify if there are registered travellers on the platform who haven't booked with your agency.</p>
-                </div>
-            <?php else: ?>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <?php foreach ($leads as $lead): ?>
-                        <?php 
-                        // Compute age dynamically
-                        $dob_str = $lead['DOB'];
-                        $age = 'N/A';
-                        if ($dob_str) {
-                            $dob = new DateTime($dob_str);
-                            $now = new DateTime();
-                            $age = $now->diff($dob)->y;
-                        }
-                        
-                        // Parse preferences
-                        $prefs = [];
-                        if ($lead['Preferences']) {
-                            $prefs = array_map('trim', explode(',', $lead['Preferences']));
-                        }
-                        
-                        // Calculate compatibility score
-                        $match_count = 0;
-                        foreach ($prefs as $p) {
-                            if (in_array(strtolower($p), $agency_destinations)) {
-                                $match_count++;
-                            }
-                        }
-                        $pref_count = count($prefs);
-                        $compatibility_pct = $pref_count > 0 ? round(($match_count / $pref_count) * 100) : 0;
-                        
-                        $colors = ['bg-blue-100 text-blue-700', 'bg-purple-100 text-purple-700', 'bg-emerald-100 text-emerald-700', 'bg-indigo-100 text-indigo-700', 'bg-rose-100 text-rose-700'];
-                        $avatar_color = $colors[array_sum(str_split(ord($lead['FirstName']))) % count($colors)];
-                        ?>
-                        <div class="bg-white rounded-xl border border-outline-variant/60 p-5 flex flex-col justify-between hover:shadow-md transition-all duration-300 relative group">
-                            
-                            <div>
-                                <!-- Upper Profile Layout -->
-                                <div class="flex justify-between items-start gap-4">
-                                    <div class="flex gap-4">
-                                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-base shrink-0 select-none <?php echo $avatar_color; ?>">
-                                            <?php echo substr($lead['FirstName'], 0, 1) . substr($lead['LastName'], 0, 1); ?>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-tight">
-                                                <?php echo htmlspecialchars($lead['FirstName'] . ' ' . $lead['LastName']); ?>
-                                            </h3>
-                                            <p class="text-xs text-secondary mt-0.5 select-all font-mono" title="Privacy Protected"><?php echo htmlspecialchars(maskEmail($lead['Email'])); ?></p>
-                                            
-                                            <!-- Profile details -->
-                                            <div class="flex items-center gap-2 mt-2 select-none">
-                                                <span class="px-2 py-0.5 bg-surface-container-low text-secondary border border-outline-variant/30 text-[10px] font-bold rounded">
-                                                    Age: <?php echo $age; ?> yrs
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Solo Budget Level -->
-                                    <div class="text-right shrink-0">
-                                        <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Solo Budget Limit</span>
-                                        <p class="text-lg font-bold text-primary font-mono mt-0.5"><?php echo formatCurrency($lead['SoloBudget']); ?></p>
-                                    </div>
-                                </div>
-
-                                <!-- Interest Preferences Grid -->
-                                <div class="mt-4">
-                                    <p class="text-[10px] font-bold text-secondary uppercase tracking-wider mb-2 select-none">Saved Traveler Interests</p>
-                                    <?php if (empty($prefs)): ?>
-                                        <p class="text-xs text-muted italic">No specific preferences listed.</p>
-                                    <?php else: ?>
-                                        <div class="flex flex-wrap gap-1.5">
-                                            <?php foreach ($prefs as $p): ?>
-                                                <?php 
-                                                // Cross-reference with agency active destinations
-                                                $is_match = in_array(strtolower($p), $agency_destinations);
-                                                $chip_class = $is_match 
-                                                    ? 'bg-green-50 border-green-200 text-green-700 font-extrabold flex items-center gap-0.5' 
-                                                    : 'bg-surface-container-low border-outline-variant/30 text-secondary';
-                                                ?>
-                                                <span class="px-2.5 py-1 border text-[10px] rounded-full <?php echo $chip_class; ?>">
-                                                    <?php if ($is_match): ?>
-                                                        <span class="material-symbols-outlined text-[11px] fill-1 text-green-600">star</span>
-                                                        Match: 
-                                                    <?php endif; ?>
-                                                    <?php echo htmlspecialchars($p); ?>
-                                                </span>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-
-                            <!-- Matchmaker compatibility score progress bar -->
-                            <div class="mt-4 flex flex-col gap-2 bg-surface-container-low/40 p-3 rounded-lg border border-outline-variant/20 select-none">
-                                <div class="flex justify-between items-center text-xs">
-                                    <span class="font-bold text-secondary uppercase tracking-wider">Interest Alignment</span>
-                                    <span class="font-extrabold text-primary font-mono"><?php echo $compatibility_pct; ?>%</span>
-                                </div>
-                                <div class="w-full bg-surface-container-high rounded-full h-1.5 overflow-hidden">
-                                    <div class="bg-primary h-full rounded-full transition-all duration-500" style="width: <?php echo $compatibility_pct; ?>%"></div>
-                                </div>
-                            </div>
-
-                            <!-- Ethical Lead Privacy Status -->
-                            <div class="mt-4 pt-3 border-t border-outline-variant/30 flex items-center justify-between text-xs text-secondary select-none">
-                                <span class="flex items-center gap-1.5 font-medium">
-                                    <span class="material-symbols-outlined text-[16px] text-green-600">lock</span>
-                                    Privacy Shielded
-                                </span>
-                                <span class="text-[11px] text-muted italic">Direct pitching disabled</span>
-                            </div>
-
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        <?php endif; ?>
     </div>
 
 </div>
