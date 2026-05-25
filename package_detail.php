@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/db_connect.php';
+require_once 'includes/image_service.php';
 
 if (!isset($_GET['id'])) {
     header("Location: packages.php");
@@ -123,7 +124,7 @@ try {
                         'name' => $a['Name'],
                         'lat' => (float)$a['Coordinates_Lat'],
                         'lng' => (float)$a['Coordinates_Long'],
-                        'details' => htmlspecialchars(($a['Type'] ?? 'Hotel') . ' • $' . number_format($a['PricePerNight'], 0) . '/night • ' . ($a['StarRating'] ?? '5') . '★')
+                        'details' => htmlspecialchars(($a['Type'] ?? 'Hotel') . ' • ' . formatCurrency($a['PricePerNight']) . '/night • ' . ($a['StarRating'] ?? '5') . '★')
                     ];
                 }
             }
@@ -137,7 +138,7 @@ try {
                         'name' => $attr['Name'],
                         'lat' => (float)$attr['Coordinates_Lat'],
                         'lng' => (float)$attr['Coordinates_Long'],
-                        'details' => htmlspecialchars(($attr['Category'] ?? 'Landmark') . ' • ' . ($attr['EntryFee'] > 0 ? '$' . number_format($attr['EntryFee'], 0) : 'Free Entry'))
+                        'details' => htmlspecialchars(($attr['Category'] ?? 'Landmark') . ' • ' . ($attr['EntryFee'] > 0 ? formatCurrency($attr['EntryFee']) : 'Free Entry'))
                     ];
                 }
             }
@@ -151,7 +152,7 @@ try {
                         'name' => $r['Name'],
                         'lat' => (float)$r['Coordinates_Lat'],
                         'lng' => (float)$r['Coordinates_Long'],
-                        'details' => htmlspecialchars(($r['CuisineType'] ?? 'Local') . ' Cuisine • Avg Cost: $' . number_format($r['AverageCost'], 0))
+                        'details' => htmlspecialchars(($r['CuisineType'] ?? 'Local') . ' Cuisine • Avg Cost: ' . formatCurrency($r['AverageCost']))
                     ];
                 }
             }
@@ -307,35 +308,51 @@ try {
         
         <!-- Base Package Card -->
         <div class="bg-surface rounded-card shadow-sm border border-muted/20 overflow-hidden bg-white">
-            <div class="h-64 md:h-80 bg-background-light flex items-center justify-center border-b border-muted/20 relative">
-                <span class="material-symbols-outlined text-6xl text-muted/30">landscape</span>
-                <span class="absolute top-4 right-4 bg-primary text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">Featured Package</span>
+            <?php 
+                $packageCover = !empty($package['ImageURL']) ? $package['ImageURL'] : ImageService::getPackageImage($package['Title'], $package['Description']);
+            ?>
+            <div class="relative h-80 md:h-[400px] w-full overflow-hidden border-b border-muted/20 group">
+                <!-- Parallax background wrapper -->
+                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[1000ms] ease-out scale-105 group-hover:scale-100" style="background-image: url('<?php echo htmlspecialchars($packageCover); ?>');"></div>
+                <!-- Linear Vignette Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+                
+                <span class="absolute top-4 right-4 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full shadow-lg border border-white/20 backdrop-blur-sm z-20">Featured Package</span>
+                
+                <!-- Floating Info Overlay on Hero with Glassmorphism badges -->
+                <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col justify-end gap-2.5 z-10">
+                    <span class="text-xs font-extrabold tracking-widest text-accent uppercase drop-shadow-md">Curated by <?php echo htmlspecialchars($package['AgencyName']); ?></span>
+                    <h1 class="text-2xl md:text-4xl font-heading font-bold text-white drop-shadow-lg leading-tight"><?php echo htmlspecialchars($package['Title']); ?></h1>
+                    
+                    <!-- Glassmorphic Meta Pills -->
+                    <div class="flex flex-wrap gap-2.5 mt-2">
+                        <div class="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-bold text-white border border-white/20 transition-colors shadow-sm">
+                            <span class="material-symbols-outlined text-[16px] text-white">schedule</span>
+                            <?php echo $package['DurationDays']; ?> Days
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-bold text-white border border-white/20 transition-colors shadow-sm">
+                            <span class="material-symbols-outlined text-[16px] text-white">group</span>
+                            Max Capacity: <?php echo $package['MaxCapacity']; ?>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg text-xs font-bold text-white border border-white/20 transition-colors shadow-sm">
+                            <span class="material-symbols-outlined text-[16px] text-amber-400 fill-1">star</span>
+                            Rating: <?php echo number_format($package['AgencyRating'], 1); ?>/5
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="p-6 md:p-8">
-                <div class="flex justify-between items-start flex-wrap gap-4 mb-4">
+                <div class="flex justify-between items-center flex-wrap gap-4 mb-6 pb-4 border-b border-muted/10">
                     <div>
-                        <span class="text-sm font-semibold tracking-wider text-accent uppercase mb-1 block">Curated by <?php echo htmlspecialchars($package['AgencyName']); ?></span>
-                        <h1 class="text-3xl md:text-4xl font-heading font-semibold text-text-main"><?php echo htmlspecialchars($package['Title']); ?></h1>
+                        <p class="text-xs text-muted font-bold uppercase tracking-wider">Experience Level</p>
+                        <p class="text-sm font-semibold text-text-main">Premium Guided Tour</p>
                     </div>
-                    <div class="bg-background-light p-3 rounded-lg border border-outline-variant flex flex-col items-end">
-                        <p class="text-[11px] text-muted uppercase tracking-wider font-bold mb-0.5">Base Price</p>
-                        <p class="text-2xl font-semibold text-primary font-mono">$<?php echo number_format($package['BasePrice'], 2); ?></p>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap gap-4 mb-6 pt-4 border-t border-muted/20">
-                    <div class="flex items-center gap-2 bg-background-light px-3 py-1.5 rounded-md text-sm font-medium border border-outline-variant/40">
-                        <span class="material-symbols-outlined text-[18px] text-muted">schedule</span>
-                        <?php echo $package['DurationDays']; ?> Days
-                    </div>
-                    <div class="flex items-center gap-2 bg-background-light px-3 py-1.5 rounded-md text-sm font-medium border border-outline-variant/40">
-                        <span class="material-symbols-outlined text-[18px] text-muted">group</span>
-                        Max Capacity: <?php echo $package['MaxCapacity']; ?>
-                    </div>
-                    <div class="flex items-center gap-2 bg-background-light px-3 py-1.5 rounded-md text-sm font-medium border border-outline-variant/40">
-                        <span class="material-symbols-outlined text-[18px] text-muted">star</span>
-                        Rating: <?php echo number_format($package['AgencyRating'], 1); ?>/5
+                    <div class="bg-background-light px-4 py-2.5 rounded-xl border border-outline-variant flex items-center gap-3">
+                        <div>
+                            <p class="text-[10px] text-muted uppercase tracking-wider font-bold mb-0.5 leading-none">Price per Traveller</p>
+                            <p class="text-2xl font-bold text-primary font-mono leading-none"><?php echo formatCurrency($package['BasePrice']); ?></p>
+                        </div>
                     </div>
                 </div>
 
@@ -362,11 +379,16 @@ try {
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <?php foreach ($destinations as $dest): ?>
-                        <div class="p-4 rounded-lg bg-background-light border border-outline-variant/60 flex items-start gap-3">
-                            <span class="material-symbols-outlined text-primary mt-0.5">location_on</span>
-                            <div>
-                                <h4 class="font-bold text-sm text-text-main"><?php echo htmlspecialchars($dest['Name']); ?></h4>
-                                <p class="text-xs text-secondary mt-0.5"><?php echo htmlspecialchars($dest['Country']); ?> • <?php echo htmlspecialchars($dest['Region']); ?></p>
+                        <?php 
+                            $destImage = !empty($dest['ImageURL']) ? $dest['ImageURL'] : ImageService::getDestinationImage($dest['Name']);
+                        ?>
+                        <div class="p-3 rounded-xl bg-background-light border border-outline-variant/60 flex gap-3 items-center hover:border-primary/30 transition-all group">
+                            <div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 relative shadow-sm">
+                                <img src="<?php echo htmlspecialchars($destImage); ?>" alt="<?php echo htmlspecialchars($dest['Name']); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-bold text-sm text-text-main group-hover:text-primary transition-colors truncate"><?php echo htmlspecialchars($dest['Name']); ?></h4>
+                                <p class="text-xs text-secondary mt-0.5 leading-none truncate"><?php echo htmlspecialchars($dest['Country']); ?></p>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -385,6 +407,46 @@ try {
                 
                 <!-- Leaflet CSS & JS inline loading -->
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+                <style>
+                    @keyframes pathDash {
+                        to {
+                            stroke-dashoffset: -40;
+                        }
+                    }
+                    .animated-path {
+                        stroke-dasharray: 8, 8;
+                        animation: pathDash 1.5s linear infinite;
+                    }
+                    @keyframes markerPulse {
+                        0% {
+                            box-shadow: 0 0 0 0 rgba(var(--pulse-rgb), 0.7);
+                            transform: scale(1);
+                        }
+                        70% {
+                            box-shadow: 0 0 0 10px rgba(var(--pulse-rgb), 0);
+                            transform: scale(1.08);
+                        }
+                        100% {
+                            box-shadow: 0 0 0 0 rgba(var(--pulse-rgb), 0);
+                            transform: scale(1);
+                        }
+                    }
+                    .pulse-accommodation {
+                        --pulse-rgb: 69, 123, 157; /* #457b9d */
+                    }
+                    .pulse-attraction {
+                        --pulse-rgb: 42, 157, 143; /* #2a9d8f */
+                    }
+                    .pulse-destination {
+                        --pulse-rgb: 230, 57, 70; /* #e63946 */
+                    }
+                    .pulse-restaurant {
+                        --pulse-rgb: 244, 162, 97; /* #f4a261 */
+                    }
+                    .pulsing-marker-element {
+                        animation: markerPulse 2s infinite;
+                    }
+                </style>
                 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
                 
                 <div id="itinerary-map" class="w-full h-[400px] rounded-lg border border-outline-variant/60 shadow-inner z-10"></div>
@@ -442,10 +504,11 @@ try {
                                      pt.type === 'Attraction' ? 'explore' : 
                                      pt.type === 'Restaurant' ? 'dining' : 'location_on';
                                      
+                    const pulseClass = 'pulse-' + pt.type.toLowerCase();
                     const customIcon = L.divIcon({
-                        className: 'custom-map-marker',
+                        className: 'custom-map-marker-container',
                         html: `
-                            <div style="
+                            <div class="${pulseClass} pulsing-marker-element hover:scale-110 flex justify-center items-center" style="
                                 background: ${markerColor};
                                 color: white;
                                 width: 32px;
@@ -457,7 +520,7 @@ try {
                                 box-shadow: 0 4px 10px rgba(0,0,0,0.3);
                                 border: 2px solid white;
                                 transition: transform 0.2s;
-                            " class="hover:scale-110 flex justify-center items-center">
+                            ">
                                 <span class="material-symbols-outlined" style="font-size: 16px;">${typeIcon}</span>
                             </div>
                         `,
@@ -487,12 +550,39 @@ try {
                     markers.push(marker);
                 });
                 
-                // Draw connecting path
-                const polyline = L.polyline(latlngs, {
+                // Curve Points Generator for Geodesic aesthetic arcs
+                function getCurvePoints(start, end, numPoints = 30) {
+                    const points = [];
+                    const midLat = (start[0] + end[0]) / 2;
+                    const midLng = (start[1] + end[1]) / 2;
+                    
+                    const dLat = end[0] - start[0];
+                    const dLng = end[1] - start[1];
+                    const offsetScale = 0.15; // elegant curve
+                    const ctrlLat = midLat - dLng * offsetScale;
+                    const ctrlLng = midLng + dLat * offsetScale;
+
+                    for (let i = 0; i <= numPoints; i++) {
+                        const t = i / numPoints;
+                        const lat = (1 - t) * (1 - t) * start[0] + 2 * (1 - t) * t * ctrlLat + t * t * end[0];
+                        const lng = (1 - t) * (1 - t) * start[1] + 2 * (1 - t) * t * ctrlLng + t * t * end[1];
+                        points.push([lat, lng]);
+                    }
+                    return points;
+                }
+                
+                // Draw connecting curved geodesic path routes
+                const curvedPathPoints = [];
+                for (let i = 0; i < latlngs.length - 1; i++) {
+                    const curve = getCurvePoints(latlngs[i], latlngs[i+1]);
+                    curvedPathPoints.push(...curve);
+                }
+                
+                const polyline = L.polyline(curvedPathPoints.length > 0 ? curvedPathPoints : latlngs, {
                     color: '#b7102a',
-                    weight: 3,
-                    opacity: 0.8,
-                    dashArray: '8, 8',
+                    weight: 3.5,
+                    opacity: 0.85,
+                    className: 'animated-path',
                     lineJoin: 'round'
                 }).addTo(map);
                 
@@ -509,17 +599,25 @@ try {
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <?php foreach ($accommodations as $accomm): ?>
-                        <div class="p-4 rounded-lg bg-background-light border border-outline-variant/60 flex flex-col gap-2">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-bold text-sm text-text-main"><?php echo htmlspecialchars($accomm['Name']); ?></h4>
-                                <span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded text-[9px] uppercase font-bold"><?php echo htmlspecialchars($accomm['Type']); ?></span>
+                        <?php 
+                            $accommImage = !empty($accomm['ImageURL']) ? $accomm['ImageURL'] : ImageService::getAccommodationImage($accomm['Name'], $accomm['Type']);
+                        ?>
+                        <div class="p-3 rounded-xl bg-background-light border border-outline-variant/60 flex gap-4 items-center hover:border-primary/30 transition-all group">
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 relative shadow-sm">
+                                <img src="<?php echo htmlspecialchars($accommImage); ?>" alt="<?php echo htmlspecialchars($accomm['Name']); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             </div>
-                            <div class="flex items-center gap-3 text-xs text-secondary mt-1">
-                                <span class="font-bold text-primary font-mono">$<?php echo number_format($accomm['PricePerNight'], 0); ?>/night</span>
-                                <div class="flex text-amber-500">
-                                    <?php for($i=1; $i<=5; $i++): ?>
-                                        <span class="material-symbols-outlined text-[14px] <?php echo $i <= $accomm['StarRating'] ? 'fill-1' : ''; ?>" style="font-variation-settings: 'FILL' <?php echo $i <= $accomm['StarRating'] ? '1' : '0'; ?>;">star</span>
-                                    <?php endfor; ?>
+                            <div class="flex-grow flex flex-col justify-between min-w-0">
+                                <div class="flex justify-between items-start gap-2">
+                                    <h4 class="font-bold text-sm text-text-main group-hover:text-primary transition-colors truncate"><?php echo htmlspecialchars($accomm['Name']); ?></h4>
+                                    <span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded text-[9px] uppercase font-bold flex-shrink-0"><?php echo htmlspecialchars($accomm['Type']); ?></span>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-secondary mt-1.5 flex-wrap">
+                                    <span class="font-bold text-primary font-mono"><?php echo formatCurrency($accomm['PricePerNight']); ?>/night</span>
+                                    <div class="flex text-amber-500">
+                                        <?php for($i=1; $i<=5; $i++): ?>
+                                            <span class="material-symbols-outlined text-[13px] <?php echo $i <= $accomm['StarRating'] ? 'fill-1' : ''; ?>" style="font-variation-settings: 'FILL' <?php echo $i <= $accomm['StarRating'] ? '1' : '0'; ?>;">star</span>
+                                        <?php endfor; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -542,7 +640,7 @@ try {
                                     <h4 class="font-bold text-sm text-text-main"><?php echo htmlspecialchars($flight['Airline']); ?></h4>
                                     <p class="text-[10px] font-bold text-muted font-mono tracking-wider mt-0.5">FLIGHT #<?php echo htmlspecialchars($flight['FlightNum']); ?></p>
                                 </div>
-                                <span class="text-xs font-bold text-primary font-mono">$<?php echo number_format($flight['Cost'], 2); ?></span>
+                                <span class="text-xs font-bold text-primary font-mono"><?php echo formatCurrency($flight['Cost']); ?></span>
                             </div>
                             <div class="flex justify-between items-center text-xs border-t border-outline-variant/30 pt-2 text-secondary">
                                 <div>
@@ -569,14 +667,19 @@ try {
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <?php foreach ($attractions as $attr): ?>
-                        <div class="p-4 rounded-lg bg-background-light border border-outline-variant/60 flex items-start gap-3">
-                            <span class="material-symbols-outlined text-primary mt-0.5">landmark</span>
-                            <div class="flex-grow">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="font-bold text-sm text-text-main"><?php echo htmlspecialchars($attr['Name']); ?></h4>
-                                    <span class="text-[10px] font-bold font-mono text-primary bg-primary-fixed px-1.5 py-0.5 rounded"><?php echo $attr['EntryFee'] > 0 ? '$'.number_format($attr['EntryFee'], 0) : 'FREE'; ?></span>
+                        <?php 
+                            $attrImage = !empty($attr['ImageURL']) ? $attr['ImageURL'] : ImageService::getAttractionImage($attr['Name'], $attr['Category']);
+                        ?>
+                        <div class="p-3 rounded-xl bg-background-light border border-outline-variant/60 flex gap-4 items-center hover:border-primary/30 transition-all group">
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 relative shadow-sm">
+                                <img src="<?php echo htmlspecialchars($attrImage); ?>" alt="<?php echo htmlspecialchars($attr['Name']); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            </div>
+                            <div class="flex-grow flex flex-col justify-between min-w-0">
+                                <div class="flex justify-between items-start gap-2">
+                                    <h4 class="font-bold text-sm text-text-main group-hover:text-primary transition-colors truncate"><?php echo htmlspecialchars($attr['Name']); ?></h4>
+                                    <span class="text-[10px] font-bold font-mono text-primary bg-primary-fixed px-1.5 py-0.5 rounded flex-shrink-0"><?php echo $attr['EntryFee'] > 0 ? formatCurrency($attr['EntryFee']) : 'FREE'; ?></span>
                                 </div>
-                                <p class="text-xs text-secondary mt-0.5 uppercase tracking-widest font-semibold text-[10px]"><?php echo htmlspecialchars($attr['Category']); ?></p>
+                                <p class="text-xs text-secondary mt-1.5 uppercase tracking-widest font-semibold text-[10px]"><?php echo htmlspecialchars($attr['Category']); ?></p>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -592,14 +695,19 @@ try {
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <?php foreach ($restaurants as $rest): ?>
-                        <div class="p-4 rounded-lg bg-background-light border border-outline-variant/60 flex items-start gap-3">
-                            <span class="material-symbols-outlined text-primary mt-0.5">dining</span>
-                            <div class="flex-grow">
-                                <div class="flex justify-between items-start">
-                                    <h4 class="font-bold text-sm text-text-main"><?php echo htmlspecialchars($rest['Name']); ?></h4>
-                                    <span class="text-[10px] text-muted italic">Avg Cost: $<?php echo number_format($rest['AverageCost'], 0); ?></span>
+                        <?php 
+                            $restImage = !empty($rest['ImageURL']) ? $rest['ImageURL'] : ImageService::getRestaurantImage($rest['Name'], $rest['CuisineType']);
+                        ?>
+                        <div class="p-3 rounded-xl bg-background-light border border-outline-variant/60 flex gap-4 items-center hover:border-primary/30 transition-all group">
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 relative shadow-sm">
+                                <img src="<?php echo htmlspecialchars($restImage); ?>" alt="<?php echo htmlspecialchars($rest['Name']); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            </div>
+                            <div class="flex-grow flex flex-col justify-between min-w-0">
+                                <div class="flex justify-between items-start gap-2">
+                                    <h4 class="font-bold text-sm text-text-main group-hover:text-primary transition-colors truncate"><?php echo htmlspecialchars($rest['Name']); ?></h4>
+                                    <span class="text-[10px] text-muted italic flex-shrink-0">Avg Cost: <?php echo formatCurrency($rest['AverageCost']); ?></span>
                                 </div>
-                                <p class="text-xs text-secondary mt-0.5 uppercase tracking-widest font-semibold text-[10px]"><?php echo htmlspecialchars($rest['CuisineType']); ?> Cuisine</p>
+                                <p class="text-xs text-secondary mt-1.5 uppercase tracking-widest font-semibold text-[10px]"><?php echo htmlspecialchars($rest['CuisineType']); ?> Cuisine</p>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -733,7 +841,7 @@ try {
                         <div class="pt-4 border-t border-muted/20 mt-2">
                             <div class="flex justify-between items-center mb-4 text-xs font-bold uppercase text-secondary">
                                 <span>Total Booking cost</span>
-                                <span class="text-xl font-semibold text-primary font-mono" id="total-price">$<?php echo number_format($package['BasePrice'], 2); ?></span>
+                                <span class="text-xl font-semibold text-primary font-mono" id="total-price"><?php echo formatCurrency($package['BasePrice']); ?></span>
                             </div>
                             <button type="submit" id="book-submit" class="btn w-full">Confirm Booking</button>
                         </div>
@@ -752,7 +860,7 @@ try {
                             const option = dateSelect.options[dateSelect.selectedIndex];
                             
                             // 1. Calculate price
-                            totalSpan.textContent = '$' + (basePrice * size).toFixed(2);
+                            totalSpan.textContent = 'R ' + (basePrice * size).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                             // 2. Perform capacity validation
                             if (!dateSelect.value) {

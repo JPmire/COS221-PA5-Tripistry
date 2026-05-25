@@ -278,7 +278,7 @@ if ($tab === 'customers') {
             </div>
             <div>
                 <p class="text-xs font-bold text-secondary uppercase tracking-wider">Lifetime Contribution</p>
-                <h3 class="text-2xl font-bold text-text-main mt-0.5 font-mono">$<?php echo number_format($summary_stats['lifetime_revenue'], 2); ?></h3>
+                <h3 class="text-2xl font-bold text-text-main mt-0.5 font-mono"><?php echo formatCurrency($summary_stats['lifetime_revenue']); ?></h3>
             </div>
         </div>
 
@@ -298,7 +298,7 @@ if ($tab === 'customers') {
             </div>
             <div>
                 <p class="text-xs font-bold text-secondary uppercase tracking-wider">Avg Lead Budget</p>
-                <h3 class="text-2xl font-bold text-text-main mt-0.5 font-mono">$<?php echo number_format($summary_stats['average_lead_budget'], 2); ?></h3>
+                <h3 class="text-2xl font-bold text-text-main mt-0.5 font-mono"><?php echo formatCurrency($summary_stats['average_lead_budget']); ?></h3>
             </div>
         </div>
     </div>
@@ -414,7 +414,7 @@ if ($tab === 'customers') {
                                                 Age: <?php echo $age; ?> yrs
                                             </span>
                                             <span class="px-2 py-0.5 bg-surface-container-low text-secondary border border-outline-variant/30 text-[10px] font-bold rounded font-mono">
-                                                Budget: $<?php echo number_format($cust['SoloBudget'], 0); ?>
+                                                Budget: <?php echo formatCurrency($cust['SoloBudget']); ?>
                                             </span>
                                         </div>
                                     </div>
@@ -423,7 +423,7 @@ if ($tab === 'customers') {
                                 <!-- Lifetime contribution metrics -->
                                 <div class="text-right shrink-0">
                                     <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Lifetime Contribution</span>
-                                    <p class="text-lg font-bold text-green-600 font-mono mt-0.5">$<?php echo number_format($cust['LifetimeContribution'], 2); ?></p>
+                                    <p class="text-lg font-bold text-green-600 font-mono mt-0.5"><?php echo formatCurrency($cust['LifetimeContribution']); ?></p>
                                     <span class="inline-flex items-center gap-0.5 px-2 py-0.5 bg-indigo-50 border border-indigo-100 rounded text-[9px] font-bold text-indigo-700 mt-1.5">
                                         <span class="material-symbols-outlined text-[11px]">confirmation_number</span>
                                         <?php echo $cust['TotalBookings']; ?> booking(s)
@@ -525,7 +525,7 @@ if ($tab === 'customers') {
                                     <!-- Solo Budget Level -->
                                     <div class="text-right shrink-0">
                                         <span class="text-[10px] font-bold text-muted uppercase tracking-wider">Solo Budget Limit</span>
-                                        <p class="text-lg font-bold text-primary font-mono mt-0.5">$<?php echo number_format($lead['SoloBudget'], 2); ?></p>
+                                        <p class="text-lg font-bold text-primary font-mono mt-0.5"><?php echo formatCurrency($lead['SoloBudget']); ?></p>
                                     </div>
                                 </div>
 

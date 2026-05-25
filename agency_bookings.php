@@ -253,7 +253,7 @@ try {
                                 </td>
                                 
                                 <td class="px-6 py-4 font-extrabold text-primary text-sm">
-                                    $<?php echo number_format($b['TotalAmount'], 2); ?>
+                                    <?php echo formatCurrency($b['TotalAmount']); ?>
                                 </td>
                                 
                                 <td class="px-6 py-4 text-secondary">

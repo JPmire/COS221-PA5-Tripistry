@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 if ($soloBudget < $finalTotal) {
                     $pdo->rollBack();
                     logSecurityEvent('SECURITY', "Payment failed due to insufficient funds in SoloBudget balance.", $traveller_id);
-                    $error = "Insufficient SoloBudget funds. Your current balance is $" . number_format($soloBudget, 2) . ", but you require $" . number_format($finalTotal, 2) . ".";
+                    $error = "Insufficient SoloBudget funds. Your current balance is " . formatCurrency($soloBudget) . ", but you require " . formatCurrency($finalTotal) . ".";
                 } else {
                     // Deduct wallet balance
                     $stmtDeduct = $pdo->prepare("UPDATE Traveller SET SoloBudget = SoloBudget - ? WHERE UserID = ?");
@@ -348,7 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                             <p class="text-xs text-secondary leading-normal">Confirm payment deduction directly from your personal <strong>SoloBudget</strong> wallet balance.</p>
                             <div class="flex justify-between items-center mt-2 p-2 bg-white rounded border border-outline-variant/30 text-xs">
                                 <span class="text-muted">Your Wallet Balance:</span>
-                                <span class="font-bold text-green-700 font-mono">$<?php echo number_format((float)$traveller['SoloBudget'], 2); ?></span>
+                                <span class="font-bold text-green-700 font-mono"><?php echo formatCurrency($traveller['SoloBudget']); ?></span>
                             </div>
                         </div>
 
@@ -375,20 +375,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <!-- Invoice list -->
                     <div class="flex flex-col gap-3.5 text-xs text-secondary border-b border-outline-variant/20 pb-4">
                         <div class="flex justify-between items-center">
-                            <span>Base Fare ($<?php echo number_format($basePrice, 2); ?> x <?php echo $party_size; ?>)</span>
-                            <span class="font-bold text-text-main font-mono">$<?php echo number_format($subtotal, 2); ?></span>
+                            <span>Base Fare (<?php echo formatCurrency($basePrice); ?> x <?php echo $party_size; ?>)</span>
+                            <span class="font-bold text-text-main font-mono"><?php echo formatCurrency($subtotal); ?></span>
                         </div>
 
                         <?php if ($discount > 0): ?>
                             <div class="flex justify-between items-center text-green-700">
                                 <span>Group Discount (10%)</span>
-                                <span class="font-bold font-mono">-$<?php echo number_format($discount, 2); ?></span>
+                                <span class="font-bold font-mono">-<?php echo formatCurrency($discount); ?></span>
                             </div>
                         <?php endif; ?>
 
                         <div class="flex justify-between items-center">
                             <span>Local Tourism Tax (5%)</span>
-                            <span class="font-bold text-text-main font-mono">$<?php echo number_format($tax, 2); ?></span>
+                            <span class="font-bold text-text-main font-mono"><?php echo formatCurrency($tax); ?></span>
                         </div>
                     </div>
 
@@ -398,7 +398,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                             <span class="text-[9px] uppercase tracking-wider text-muted font-bold block">Grand Total Due</span>
                             <span class="text-xs text-muted">Includes local taxes & waivers</span>
                         </div>
-                        <span class="text-xl font-bold text-primary font-mono">$<?php echo number_format($finalTotal, 2); ?></span>
+                        <span class="text-xl font-bold text-primary font-mono"><?php echo formatCurrency($finalTotal); ?></span>
                     </div>
 
                     <!-- Discount helper alert -->
