@@ -58,13 +58,13 @@ class ImageService {
             'title' => 'Sydney Opera House'
         ],
         [
-            'url' => 'https://images.unsplash.com/photo-1509060464153-4466739f78ad?auto=format&fit=crop&w=1200&q=85',
+            'url' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85',
             'tags' => ['durban', 'beachfront', 'umhlanga', 'south africa', 'dur'],
             'category' => 'Destinations',
             'title' => 'Umhlanga Pier, Durban'
         ],
         [
-            'url' => 'https://images.unsplash.com/photo-1517089596392-db9a5e285a6c?auto=format&fit=crop&w=1200&q=85',
+            'url' => 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85',
             'tags' => ['johannesburg', 'joburg', 'gauteng', 'cityscape', 'sandton', 'jnb'],
             'category' => 'Destinations',
             'title' => 'Sandton City, Johannesburg'
@@ -128,7 +128,7 @@ class ImageService {
             'title' => 'Grand Art Museum'
         ],
         [
-            'url' => 'https://images.unsplash.com/photo-1472214222541-d510753a8707?auto=format&fit=crop&w=800&q=80',
+            'url' => 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80',
             'tags' => ['park', 'garden', 'green', 'botanical', 'nature walk', 'trail'],
             'category' => 'Sights',
             'title' => 'Scenic Botanical Gardens'
