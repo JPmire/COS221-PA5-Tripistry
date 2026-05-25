@@ -1074,8 +1074,9 @@ if ($package) {
                 const insertedId = data.id;
                 const listContainer = document.getElementById('acc-dest');
                 
-                if (listContainer.querySelector('.text-muted')) {
-                    listContainer.innerHTML = '';
+                const placeholder = listContainer.querySelector('p.text-muted');
+                if (placeholder) {
+                    placeholder.remove();
                 }
 
                 const newCardHTML = `
@@ -1085,7 +1086,6 @@ if ($package) {
                 </label>`;
                 
                 listContainer.insertAdjacentHTML('afterbegin', newCardHTML);
-                alert(`${name} imported successfully and linked!`);
             } else {
                 alert('Import failed: ' + data.message);
             }
@@ -1114,8 +1114,9 @@ if ($package) {
                 const lowercaseType = type.toLowerCase();
                 const listContainer = document.getElementById('acc-' + (lowercaseType === 'accommodation' ? 'accomm' : lowercaseType === 'attraction' ? 'attractions' : 'restaurants'));
                 
-                if (listContainer.querySelector('.text-muted')) {
-                    listContainer.innerHTML = '';
+                const placeholder = listContainer.querySelector('p.text-muted');
+                if (placeholder) {
+                    placeholder.remove();
                 }
 
                 let labelText = payload.name;
@@ -1164,7 +1165,7 @@ if ($package) {
             payload.region = document.getElementById('m-dest-region').value;
         } else if (componentName === 'Accommodation') {
             payload.name = document.getElementById('m-accomm-name').value;
-            payload.type = document.getElementById('m-accomm-type').value;
+            payload.accommType = document.getElementById('m-accomm-type').value;
             payload.pricePerNight = parseFloat(document.getElementById('m-accomm-price').value);
             payload.starRating = parseInt(document.getElementById('m-accomm-stars').value);
         } else if (componentName === 'Flight') {
@@ -1204,7 +1205,7 @@ if ($package) {
                     labelText = payload.name + ', ' + payload.country;
                 } else if (componentName === 'Accommodation') {
                     labelText = payload.name;
-                    detailsText = payload.type + ' • R ' + payload.pricePerNight.toFixed(2) + '/night';
+                    detailsText = payload.accommType + ' • R ' + payload.pricePerNight.toFixed(2) + '/night';
                 } else if (componentName === 'Flight') {
                     labelText = payload.airline + ' #' + payload.flightNum;
                     detailsText = payload.depAirportCode + ' → ' + payload.arrAirportCode + ' • R ' + payload.cost.toFixed(2);
@@ -1216,8 +1217,9 @@ if ($package) {
                     detailsText = payload.cuisineType + ' • Avg: R ' + payload.averageCost.toFixed(2);
                 }
 
-                if (listContainer.querySelector('.text-muted')) {
-                    listContainer.innerHTML = '';
+                const placeholder = listContainer.querySelector('p.text-muted');
+                if (placeholder) {
+                    placeholder.remove();
                 }
 
                 const fieldName = lowercaseType === 'accommodation' ? 'accommodations[]' : lowercaseType === 'destination' ? 'destinations[]' : lowercaseType === 'flight' ? 'flights[]' : lowercaseType === 'attraction' ? 'attractions[]' : 'restaurants[]';
@@ -1234,7 +1236,6 @@ if ($package) {
                 listContainer.insertAdjacentHTML('afterbegin', newCardHTML);
                 
                 closeQuickModal(lowercaseType === 'accommodation' ? 'accomm' : lowercaseType === 'destination' ? 'dest' : lowercaseType === 'flight' ? 'flight' : lowercaseType === 'attraction' ? 'attraction' : 'restaurant');
-                alert(payload.name + ' successfully created and automatically linked!');
             } else {
                 alert('Error: ' + data.message);
             }

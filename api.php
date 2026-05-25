@@ -535,14 +535,15 @@ class TripistryAPI {
         if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
             $this->sendResponse("error", "Unauthorized.", 403);
         }
-        if (empty($data['name']) || empty($data['type']) || !isset($data['pricePerNight'])) {
+        $accommType = trim($data['accommType'] ?? ($data['type'] !== 'CreateAccommodation' ? $data['type'] : 'Hotel'));
+        if (empty($data['name']) || empty($accommType) || !isset($data['pricePerNight'])) {
             $this->sendResponse("error", "Missing required accommodation details.", 400);
         }
         try {
             $stmt = $this->pdo->prepare("INSERT INTO Accommodation (Name, Type, PricePerNight, StarRating, Address_Street, Address_City, Address_Zip) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([
                 trim($data['name']),
-                trim($data['type']),
+                $accommType,
                 (float)$data['pricePerNight'],
                 !empty($data['starRating']) ? (int)$data['starRating'] : null,
                 trim($data['addressStreet'] ?? ''),
