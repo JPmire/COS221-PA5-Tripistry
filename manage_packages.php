@@ -14,7 +14,6 @@ $agency_id = $_SESSION['user_id'];
 $error_message = '';
 $success_message = '';
 
-// Handle package deletion directly from the list if submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_package_id'])) {
     $del_id = (int)$_POST['delete_package_id'];
     try {
@@ -23,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_package_id']))
         $chk->execute([$del_id, $agency_id]);
         if ($chk->fetch()) {
             $pdo->beginTransaction();
-            // Delete references in M:N tables (these are ON DELETE CASCADE usually, but let's be transaction-safe)
             $pdo->prepare("DELETE FROM Package_Destination WHERE PackageID = ?")->execute([$del_id]);
             $pdo->prepare("DELETE FROM Package_Accommodation WHERE PackageID = ?")->execute([$del_id]);
             $pdo->prepare("DELETE FROM Package_Flight WHERE PackageID = ?")->execute([$del_id]);
@@ -42,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_package_id']))
     }
 }
 
-// Fetch all packages for the agency
 try {
     $stmt = $pdo->prepare("
         SELECT p.*, 
@@ -60,7 +57,6 @@ try {
 ?>
 
 <style>
-    /* Premium button sizes & overrides */
     .btn-premium-sm {
         height: 36px;
         padding-left: 1rem;
