@@ -113,12 +113,12 @@ require_once 'includes/header.php';
                 
                 <button type="button" class="filter-chip px-3.5 py-1.5 rounded-full cursor-pointer flex items-center gap-1 text-xs font-semibold" data-type="price" data-value="500">
                     <span class="material-symbols-outlined text-[15px]">payments</span>
-                    Budget Friendly (< $500)
+                    Budget Friendly (< R 500)
                 </button>
                 
                 <button type="button" class="filter-chip px-3.5 py-1.5 rounded-full cursor-pointer flex items-center gap-1 text-xs font-semibold" data-type="price" data-value="1000">
                     <span class="material-symbols-outlined text-[15px]">savings</span>
-                    Mid-Range (< $1,000)
+                    Mid-Range (< R 1,000)
                 </button>
                 
                 <button type="button" class="filter-chip px-3.5 py-1.5 rounded-full cursor-pointer flex items-center gap-1 text-xs font-semibold" data-type="duration" data-value="3">
@@ -156,7 +156,7 @@ require_once 'includes/header.php';
                     <input type="text" id="search-dest" class="input-field input-field-premium h-[40px] text-sm rounded-lg" placeholder="Country, City or Landmark">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-secondary uppercase tracking-wider mb-1">Specific Max Price ($)</label>
+                    <label class="block text-xs font-bold text-secondary uppercase tracking-wider mb-1">Specific Max Price (R)</label>
                     <input type="number" id="max-price" class="input-field input-field-premium h-[40px] text-sm rounded-lg" placeholder="e.g. 750">
                 </div>
                 <div>
@@ -302,15 +302,16 @@ require_once 'includes/header.php';
             
             html += `
             <div class="glass-card card-hover overflow-hidden flex flex-col relative group">
-                <div class="h-44 bg-surface-container relative">
-                    <div class="absolute inset-0 flex items-center justify-center text-secondary opacity-30 group-hover:scale-105 transition-transform duration-500">
-                        <span class="material-symbols-outlined text-6xl">landscape</span>
-                    </div>
+                <div class="h-48 relative overflow-hidden bg-surface-container">
+                    <!-- Premium Full-Bleed Cover Image -->
+                    <img src="${pkg.ImageURL}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" alt="${pkg.Title}">
+                    <!-- Elegant Linear Vignette Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-transparent"></div>
                     
                     <!-- Compare Checkbox Overlay -->
-                    <label class="absolute top-3 right-3 bg-white/75 backdrop-blur border border-outline-variant/35 rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 cursor-pointer shadow-sm hover:bg-white/90 transition-all select-none">
+                    <label class="absolute top-3 right-3 bg-white/80 backdrop-blur border border-outline-variant/35 rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 cursor-pointer shadow-sm hover:bg-white/95 transition-all select-none z-10">
                         <input type="checkbox" class="compare-checkbox w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary focus:ring-opacity-25 cursor-pointer" data-id="${pkg.PackageID}" ${isChecked}>
-                        <span class="text-xs font-bold text-text-main">Compare</span>
+                        <span class="text-xs font-extrabold text-text-main">Compare</span>
                     </label>
                 </div>
                 
@@ -332,7 +333,7 @@ require_once 'includes/header.php';
                     <div class="flex justify-between items-center pt-4 border-t border-outline-variant/30 mt-2">
                         <div>
                             <p class="text-[10px] font-bold text-muted uppercase tracking-wider">From Price</p>
-                            <p class="text-lg font-bold text-primary font-mono">$${parseFloat(pkg.BasePrice).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                            <p class="text-lg font-bold text-primary font-mono">R ${parseFloat(pkg.BasePrice).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                         </div>
                         <a href="package_detail.php?id=${pkg.PackageID}" class="btn-premium-secondary-sm">
                             View Details

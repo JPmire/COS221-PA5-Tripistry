@@ -321,7 +321,7 @@ class TripistryAPI {
 
     private function getAllPackages($data) {
         //Get the Agency Name and Rating
-        $sql = "SELECT p.PackageID, p.Title, p.BasePrice, p.DurationDays, a.AgencyName, a.AverageRating 
+        $sql = "SELECT p.PackageID, p.Title, p.BasePrice, p.DurationDays, p.ImageURL, a.AgencyName, a.AverageRating 
                 FROM TravelPackage p
                 JOIN TravelAgency a ON p.AgencyID = a.UserID";
         
@@ -388,7 +388,17 @@ class TripistryAPI {
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
-            $this->sendResponse("success", $stmt->fetchAll());
+            $packages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Auto-resolve cover images on-the-fly if empty
+            require_once 'includes/image_service.php';
+            foreach ($packages as &$pkg) {
+                if (empty($pkg['ImageURL'])) {
+                    $pkg['ImageURL'] = ImageService::getPackageImage($pkg['Title']);
+                }
+            }
+
+            $this->sendResponse("success", $packages);
         } catch (\PDOException $e) {
             $this->sendResponse("error", "Database query failed: " . $e->getMessage(), 500);
         }
@@ -412,6 +422,12 @@ class TripistryAPI {
             $package = $stmt->fetch();
             
             if (!$package) $this->sendResponse("error", "Package not found.", 404);
+
+            // Auto-resolve cover image if empty
+            if (empty($package['ImageURL'])) {
+                require_once 'includes/image_service.php';
+                $package['ImageURL'] = ImageService::getPackageImage($package['Title'], $package['Description']);
+            }
 
             //Fetch Destinations 
             $stmt = $this->pdo->prepare("SELECT d.Name, d.Country, d.Region 

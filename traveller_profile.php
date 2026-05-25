@@ -91,9 +91,9 @@ try {
 
                     <!-- Solo Budget -->
                     <div>
-                        <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Solo Travel Budget ($)</label>
+                        <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-2">Solo Travel Budget (R)</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-bold text-sm">$</span>
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-bold text-sm">R</span>
                             <input type="number" name="budget" step="50" min="0" value="<?php echo htmlspecialchars($traveller['SoloBudget']); ?>" required class="input-field pl-8 font-mono">
                         </div>
                         <p class="text-[10px] text-muted mt-1.5 leading-normal">This budget is matched dynamically against group package costs to calculate your compatibility score.</p>

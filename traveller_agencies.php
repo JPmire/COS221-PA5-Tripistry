@@ -309,7 +309,7 @@ try {
                                     <div class="border-t border-outline-variant/30 pt-3 mt-4 flex justify-between items-end">
                                         <div>
                                             <span class="text-[9px] uppercase tracking-wider block text-muted font-bold">Base Price</span>
-                                            <span class="font-heading font-bold text-primary text-sm">$<?php echo number_format($pkg['BasePrice'], 2); ?></span>
+                                            <span class="font-heading font-bold text-primary text-sm"><?php echo formatCurrency($pkg['BasePrice']); ?></span>
                                         </div>
                                         <a href="package_detail.php?id=<?php echo $pkg['PackageID']; ?>" class="bg-primary text-on-primary font-bold text-[10px] h-[32px] px-3.5 rounded-lg flex items-center gap-1 transition-all hover:bg-primary-container">
                                             Book Package
