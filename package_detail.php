@@ -208,24 +208,66 @@ try {
                 if ($rating < 1 || $rating > 5) {
                     $error = "Please provide a valid rating between 1 and 5 stars.";
                 } else {
-                    // Custom Lexicon Sentiment Scoring (Bonus Task 11)
-                    $posWords = ['amazing', 'wonderful', 'excellent', 'beautiful', 'perfect', 'great', 'love', 'enjoy', 'fantastic', 'best', 'friendly', 'clean', 'outstanding', 'superb', 'peaceful', 'magical', 'highly', 'recommend', 'smooth', 'easy', 'nice', 'awesome'];
-                    $negWords = ['bad', 'poor', 'dirty', 'rude', 'late', 'expensive', 'terrible', 'worst', 'hate', 'regret', 'horrible', 'noisy', 'boring', 'narrow', 'delay', 'problem', 'issue', 'difficult', 'broken', 'cancel', 'annoyed', 'disappointed'];
+                    // // Custom Lexicon Sentiment Scoring (Bonus Task 11)
+                    // $posWords = ['amazing', 'wonderful', 'excellent', 'beautiful', 'perfect', 'great', 'love', 'enjoy', 'fantastic', 'best', 'friendly', 'clean', 'outstanding', 'superb', 'peaceful', 'magical', 'highly', 'recommend', 'smooth', 'easy', 'nice', 'awesome'];
+                    // $negWords = ['bad', 'poor', 'dirty', 'rude', 'late', 'expensive', 'terrible', 'worst', 'hate', 'regret', 'horrible', 'noisy', 'boring', 'narrow', 'delay', 'problem', 'issue', 'difficult', 'broken', 'cancel', 'annoyed', 'disappointed'];
 
-                    $lowerComment = strtolower($comment);
-                    // Simple word boundary tokenizer
-                    $words = preg_split('/\W+/', $lowerComment, -1, PREG_SPLIT_NO_EMPTY);
+                    // $lowerComment = strtolower($comment);
+                    // // Simple word boundary tokenizer
+                    // $words = preg_split('/\W+/', $lowerComment, -1, PREG_SPLIT_NO_EMPTY);
                     
-                    $posCount = 0;
-                    $negCount = 0;
-                    foreach ($words as $w) {
-                        if (in_array($w, $posWords)) $posCount++;
-                        if (in_array($w, $negWords)) $negCount++;
-                    }
+                    // $posCount = 0;
+                    // $negCount = 0;
+                    // foreach ($words as $w) {
+                    //     if (in_array($w, $posWords)) $posCount++;
+                    //     if (in_array($w, $negWords)) $negCount++;
+                    // }
 
-                    $sentimentScore = 0.00;
-                    if (($posCount + $negCount) > 0) {
-                        $sentimentScore = ($posCount - $negCount) / ($posCount + $negCount);
+                    // $sentimentScore = 0.00;
+                    // if (($posCount + $negCount) > 0) {
+                    //     $sentimentScore = ($posCount - $negCount) / ($posCount + $negCount);
+                    // }
+
+                    $envPath = __DIR__ . '/.env';
+                    $apiKey = file_exists($envPath) ? parse_ini_file($envPath)['GEMINI_API_KEY'] ?? '' : '';
+
+                    $sentimentScore = 0.00; 
+
+                    if (!empty($apiKey)) {
+                        $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $apiKey;
+                        
+                        $prompt = "Analyze the sentiment of the following travel review. Return ONLY a valid JSON object with a single key 'sentiment_score' containing a float from -1.00 (very negative) to 1.00 (very positive). Review: " . $comment;
+
+                        $payload = json_encode([
+                            "contents" => [
+                                ["parts" => [["text" => $prompt]]]
+                            ],
+                            "generationConfig" => [
+                                "response_mime_type" => "application/json"
+                            ]
+                        ]);
+
+                        $ch = curl_init($endpoint);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+
+                        $response = curl_exec($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        curl_close($ch);
+
+                        if ($httpCode === 200 && $response) {
+                            $responseData = json_decode($response, true);
+                            if (isset($responseData['candidates'][0]['content']['parts'][0]['text'])) {
+                                $aiText = $responseData['candidates'][0]['content']['parts'][0]['text'];
+                                $aiJson = json_decode($aiText, true);
+                                
+                                if (isset($aiJson['sentiment_score'])) {
+                                    $sentimentScore = (float)$aiJson['sentiment_score'];
+                                }
+                            }
+                        }
                     }
 
                     try {
