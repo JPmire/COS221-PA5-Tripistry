@@ -9,6 +9,19 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
 $page_title = 'Traveller Insights';
 require_once 'includes/header.php';
 
+// Helper to mask email addresses of prospective leads for traveler privacy protection
+function maskEmail($email) {
+    $parts = explode('@', $email);
+    if (count($parts) === 2) {
+        $name = $parts[0];
+        $domain = $parts[1];
+        if (strlen($name) > 2) {
+            return substr($name, 0, 1) . str_repeat('*', strlen($name) - 2) . substr($name, -1) . '@' . $domain;
+        }
+        return str_repeat('*', strlen($name)) . '@' . $domain;
+    }
+    return $email;
+}
 
 $agency_id = $_SESSION['user_id'];
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -18,30 +31,9 @@ $tab = isset($_GET['tab']) ? trim($_GET['tab']) : 'customers'; // customers or l
 $success_message = '';
 $error_message = '';
 
-// Handle visual Pitch/Invite proposal actions for prospective leads
+// Handle visual Pitch/Invite proposal actions for prospective leads (Deactivated for traveler privacy)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'pitch_lead') {
-    $lead_name = htmlspecialchars($_POST['lead_name'] ?? 'Traveller');
-    $lead_id = (int)($_POST['lead_id'] ?? 0);
-    
-    if ($lead_id > 0) {
-        try {
-            // Get Agency Name
-            $stmt = $pdo->prepare("SELECT AgencyName FROM TravelAgency WHERE UserID = ?");
-            $stmt->execute([$agency_id]);
-            $agency_name = $stmt->fetchColumn() ?: "An Agency";
-
-            // Insert real notification in db for traveller
-            $title = "Exclusive Campaign Offer from " . $agency_name;
-            $message = "Hey " . $lead_name . ", " . $agency_name . " has selected you for an exclusive campaign offer! They have analyzed your preferences and Solo Budget to draft a premium trip package just for you. Open your dashboard to check out their offered packages!";
-            
-            $stmt = $pdo->prepare("INSERT INTO Notification (UserID, Title, Message, IsRead, CreatedAt) VALUES (?, ?, ?, 0, NOW())");
-            $stmt->execute([$lead_id, $title, $message]);
-            
-            $success_message = "<strong>Pitch Dispatched!</strong> Customized trip proposal and exclusive agency discount code successfully sent to <strong>" . $lead_name . "</strong>.";
-        } catch (\PDOException $e) {
-            $error_message = "Failed to dispatch pitch: " . $e->getMessage();
-        }
-    }
+    $error_message = "Direct pitching of unsolicited campaign offers is disabled to protect traveler privacy and comply with ethical marketing standards.";
 }
 
 // Fetch agency lifetime metrics for the high-level dashboard counters
@@ -129,33 +121,33 @@ if ($tab === 'customers') {
                    (SELECT tp2.Title 
                     FROM Booking b2 
                     JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
-                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id 
+                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub1 
                     ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestPackageTitle,
                     
                    (SELECT gt2.StartDate 
                     FROM Booking b2 
                     JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
                     JOIN GroupTrip gt2 ON (b2.Trip_PackageID = gt2.PackageID AND b2.Trip_TripDateID = gt2.TripDateID)
-                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id 
+                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub2 
                     ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestStartDate,
                     
                    (SELECT gt2.EndDate 
                     FROM Booking b2 
                     JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
                     JOIN GroupTrip gt2 ON (b2.Trip_PackageID = gt2.PackageID AND b2.Trip_TripDateID = gt2.TripDateID)
-                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id 
+                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub3 
                     ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestEndDate,
                     
                    (SELECT b2.PaymentStatus 
                     FROM Booking b2 
                     JOIN TravelPackage tp2 ON b2.Trip_PackageID = tp2.PackageID 
-                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id 
+                    WHERE b2.TravellerID = t.UserID AND tp2.AgencyID = :agency_id_sub4 
                     ORDER BY b2.BookingDate DESC, b2.BookingID DESC LIMIT 1) AS LatestPaymentStatus
             FROM Booking b
             JOIN Traveller t ON b.TravellerID = t.UserID
             JOIN User u ON t.UserID = u.UserID
             JOIN TravelPackage tp ON b.Trip_PackageID = tp.PackageID
-            WHERE tp.AgencyID = :agency_id
+            WHERE tp.AgencyID = :agency_id_main
         ";
         
         if ($search !== '') {
@@ -176,7 +168,13 @@ if ($tab === 'customers') {
         }
         
         $stmt = $pdo->prepare($sql);
-        $params = [':agency_id' => $agency_id];
+        $params = [
+            ':agency_id_sub1' => $agency_id,
+            ':agency_id_sub2' => $agency_id,
+            ':agency_id_sub3' => $agency_id,
+            ':agency_id_sub4' => $agency_id,
+            ':agency_id_main' => $agency_id
+        ];
         if ($search !== '') {
             $params[':search'] = '%' . $search . '%';
         }
@@ -495,6 +493,16 @@ if ($tab === 'customers') {
                             $prefs = array_map('trim', explode(',', $lead['Preferences']));
                         }
                         
+                        // Calculate compatibility score
+                        $match_count = 0;
+                        foreach ($prefs as $p) {
+                            if (in_array(strtolower($p), $agency_destinations)) {
+                                $match_count++;
+                            }
+                        }
+                        $pref_count = count($prefs);
+                        $compatibility_pct = $pref_count > 0 ? round(($match_count / $pref_count) * 100) : 0;
+                        
                         $colors = ['bg-blue-100 text-blue-700', 'bg-purple-100 text-purple-700', 'bg-emerald-100 text-emerald-700', 'bg-indigo-100 text-indigo-700', 'bg-rose-100 text-rose-700'];
                         $avatar_color = $colors[array_sum(str_split(ord($lead['FirstName']))) % count($colors)];
                         ?>
@@ -511,7 +519,7 @@ if ($tab === 'customers') {
                                             <h3 class="text-base font-bold text-text-main group-hover:text-primary transition-colors leading-tight">
                                                 <?php echo htmlspecialchars($lead['FirstName'] . ' ' . $lead['LastName']); ?>
                                             </h3>
-                                            <p class="text-xs text-secondary mt-0.5 select-all font-mono"><?php echo htmlspecialchars($lead['Email']); ?></p>
+                                            <p class="text-xs text-secondary mt-0.5 select-all font-mono" title="Privacy Protected"><?php echo htmlspecialchars(maskEmail($lead['Email'])); ?></p>
                                             
                                             <!-- Profile details -->
                                             <div class="flex items-center gap-2 mt-2 select-none">
@@ -557,17 +565,24 @@ if ($tab === 'customers') {
                                 </div>
                             </div>
 
-                            <!-- Custom Lead Campaign Pitch CTA -->
-                            <div class="mt-5 pt-4 border-t border-outline-variant/30 flex justify-end">
-                                <form method="POST" action="?tab=leads">
-                                    <input type="hidden" name="action" value="pitch_lead">
-                                    <input type="hidden" name="lead_id" value="<?php echo $lead['TravellerID']; ?>">
-                                    <input type="hidden" name="lead_name" value="<?php echo htmlspecialchars($lead['FirstName'] . ' ' . $lead['LastName']); ?>">
-                                    <button type="submit" class="h-9 px-4 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary-dark transition-all shadow flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[15px]">send</span>
-                                        Pitch Exclusive Deal
-                                    </button>
-                                </form>
+                            <!-- Matchmaker compatibility score progress bar -->
+                            <div class="mt-4 flex flex-col gap-2 bg-surface-container-low/40 p-3 rounded-lg border border-outline-variant/20 select-none">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="font-bold text-secondary uppercase tracking-wider">Interest Alignment</span>
+                                    <span class="font-extrabold text-primary font-mono"><?php echo $compatibility_pct; ?>%</span>
+                                </div>
+                                <div class="w-full bg-surface-container-high rounded-full h-1.5 overflow-hidden">
+                                    <div class="bg-primary h-full rounded-full transition-all duration-500" style="width: <?php echo $compatibility_pct; ?>%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Ethical Lead Privacy Status -->
+                            <div class="mt-4 pt-3 border-t border-outline-variant/30 flex items-center justify-between text-xs text-secondary select-none">
+                                <span class="flex items-center gap-1.5 font-medium">
+                                    <span class="material-symbols-outlined text-[16px] text-green-600">lock</span>
+                                    Privacy Shielded
+                                </span>
+                                <span class="text-[11px] text-muted italic">Direct pitching disabled</span>
                             </div>
 
                         </div>
