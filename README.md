@@ -55,16 +55,14 @@ The database connection relies on a ignored `config.php` file for local developm
    $pass = '';                 // Database password (default: empty on XAMPP)
    ```
 
-### 4. Database Setup & SQL Files Overview
-The repository includes three database files:
-1.  **`Tripistry_schema.sql`**: Contains the complete relational database table definitions, foreign keys, check constraints, and referential triggers.
-2.  **`seed.sql`**: Contains all SQL query inserts to pre-populate the tables with realistic, curated mock data (matching the accounts below).
-3.  **`Database dump.sql`**: A unified database dump containing **both** table schemas and the population seeds in one single file.
+### 4. Database Setup & SQL Dump Overview
+The repository includes a unified database file:
+*   **`Database dump.sql`**: A unified database dump containing **both** the complete table schemas (tables, constraints, triggers, and foreign keys) and the initial mock data seeds in one single file.
 
-You can set up the database using any of the following three options:
+You can set up the database using either of the following two options:
 
 #### Option A: One-Click Automatic CLI Command (Recommended)
-If you have PHP in your CLI, run the helper reset script which drops existing tables, creates the schema, and seeds all mock data automatically:
+If you have PHP in your CLI, run the helper reset script which drops the existing database, recreates it, and imports all schemas and mock data automatically:
 *   **Mac/Linux**:
     ```bash
     /Applications/XAMPP/xamppfiles/bin/php -f scratch/reset_db.php
@@ -74,18 +72,12 @@ If you have PHP in your CLI, run the helper reset script which drops existing ta
     php scratch\reset_db.php
     ```
 
-#### Option B: Manual phpMyAdmin Unified Import (Simplest Manual Option)
+#### Option B: Manual phpMyAdmin Import (Simplest Graphical Option)
 1. **Open phpMyAdmin**: Navigate to [http://localhost/phpmyadmin](http://localhost/phpmyadmin).
-2. **Create Database**: Click **New**, enter `tripistry-cos221` as the database name, select **`utf8mb4_general_ci`** collation, and click **Create**.
-3. **Import Unified Dump**:
-   * Select `tripistry-cos221` from the left list.
+2. **Import Unified Dump**:
    * Click the **Import** tab on the top menu.
-   * Choose **`Database dump.sql`** and click **Import** (or **Go**). Your schema and data are now fully set up in one step!
-
-#### Option C: Split Schema & Seed Import
-1. **Create Database**: Follow step 1 and 2 above.
-2. **Import Schema**: Select `tripistry-cos221`, click **Import**, choose **`Tripistry_schema.sql`**, and import it to create all tables.
-3. **Import Seeds**: Click **Import** once more, choose **`seed.sql`**, and import it to populate all tables.
+   * Choose **`Database dump.sql`** and click **Import** (or **Go**). 
+   * This file automatically checks for an existing `tripistry-cos221` database, drops it if present, creates it, and imports all schemas and seed data in one step!
 
 ---
 

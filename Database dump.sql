@@ -1,9 +1,9 @@
---Create Database
+-- Create Database
 DROP DATABASE IF EXISTS `tripistry-cos221`;
 CREATE DATABASE `tripistry-cos221`;
 USE `tripistry-cos221`;
 
---Create Tables
+-- Create Tables
 -- 1. BASE SUPERCLASS 
 CREATE TABLE User (
     UserID INT AUTO_INCREMENT PRIMARY KEY,
@@ -237,7 +237,7 @@ CREATE TABLE Notification (
     FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE CASCADE
 );
 
---Populate DB
+-- Populate DB
 -- 1. SUPERCLASS: USERS
 -- IDs 1-3 are Agencies. IDs 4-9 are Travellers.
 INSERT INTO User (UserID, Email, PasswordHash, DateJoined, LastLoginTime, AccountStatus) VALUES

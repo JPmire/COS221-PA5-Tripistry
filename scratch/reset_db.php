@@ -2,51 +2,54 @@
 // reset_db.php - Universal Database Setup & Seeding Script
 
 // Dynamically reference path to config relative to this file
-$configPath = dirname(__DIR__) . '/includes/db_connect.php';
-if (!file_exists($configPath)) {
-    // Try root config as fallback if db_connect isn't used directly
-    $configPath = dirname(__DIR__) . '/config.php';
-}
+$configPath = dirname(__DIR__) . '/config.php';
 
 if (!file_exists($configPath)) {
     die("ERROR: Config file not found. Please ensure you have copied config.php.example to config.php.\n");
 }
 
-require_once $configPath;
-
 try {
-    echo "Disabling foreign key checks...\n";
+    // Read and parse config.php to connect without specifying a database first
+    $configContent = file_get_contents($configPath);
+    
+    $host = 'localhost';
+    $user = 'root';
+    $pass = '';
+    $charset = 'utf8mb4';
+
+    if (preg_match('/\$host\s*=\s*[\'"]([^\'"]+)[\'"]/', $configContent, $matches)) {
+        $host = $matches[1];
+    }
+    if (preg_match('/\$user\s*=\s*[\'"]([^\'"]*)[\'"]/', $configContent, $matches)) {
+        $user = $matches[1];
+    }
+    if (preg_match('/\$pass\s*=\s*[\'"]([^\'"]*)[\'"]/', $configContent, $matches)) {
+        $pass = $matches[1];
+    }
+    if (preg_match('/\$charset\s*=\s*[\'"]([^\'"]+)[\'"]/', $configContent, $matches)) {
+        $charset = $matches[1];
+    }
+
+    $dsn = "mysql:host=$host;charset=$charset";
+    $pdo = new PDO($dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ]);
+
+    // Load and execute unified dump
+    $dumpPath = dirname(__DIR__) . '/Database dump.sql';
+    if (!file_exists($dumpPath)) {
+        throw new Exception("Unified database dump file not found at: $dumpPath");
+    }
+    
+    echo "Recreating database and seeding tables from Database dump.sql...\n";
+    $dumpSql = file_get_contents($dumpPath);
+    
+    // Disable foreign key checks for safety during execution
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
-
-    // Get list of tables to clear any existing environment cleanly
-    $stmt = $pdo->query("SHOW TABLES");
-    $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-    foreach ($tables as $table) {
-        echo "Dropping table $table...\n";
-        $pdo->exec("DROP TABLE IF EXISTS `$table` CASCADE;");
-    }
-
-    echo "Enabling foreign key checks...\n";
+    $pdo->exec($dumpSql);
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
-
-    // Load and execute schema
-    $schemaPath = dirname(__DIR__) . '/Tripistry_schema.sql';
-    if (!file_exists($schemaPath)) {
-        throw new Exception("Schema file not found at: $schemaPath");
-    }
-    echo "Creating schema from Tripistry_schema.sql...\n";
-    $schemaSql = file_get_contents($schemaPath);
-    $pdo->exec($schemaSql);
-
-    // Load and execute seed data
-    $seedPath = dirname(__DIR__) . '/seed.sql';
-    if (!file_exists($seedPath)) {
-        throw new Exception("Seed file not found at: $seedPath");
-    }
-    echo "Seeding database with premium mock accounts...\n";
-    $seedSql = file_get_contents($seedPath);
-    $pdo->exec($seedSql);
 
     echo "SUCCESS: Database successfully reset and seeded!\n";
 } catch (Exception $e) {
