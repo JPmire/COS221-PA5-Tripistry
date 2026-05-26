@@ -79,6 +79,21 @@ If you have PHP in your CLI, run the helper reset script which drops the existin
    * Choose **`Database dump.sql`** and click **Import** (or **Go**). 
    * This file automatically checks for an existing `tripistry-cos221` database, drops it if present, creates it, and imports all schemas and seed data in one step!
 
+### 5. Gemini API Key Configuration
+Tripistry integrates Gemini AI (`gemini-2.5-flash`) to analyze and compute traveller review sentiment scores and write custom agency package summaries.
+1. Copy the provided sample environment file to create a `.env` file in the root of the project:
+   ```bash
+   cp .env.example .env
+   ```
+2. Open `.env` and add your Gemini API Key:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+3. Test your configuration: Run the standalone test utility in your browser at `http://localhost/cos221/COS221-PA5-Tripistry/test_gemini.php` or execute it via terminal:
+   ```bash
+   /Applications/XAMPP/xamppfiles/bin/php -f test_gemini.php
+   ```
+
 ---
 
 ## 🔑 Seeded Mock Accounts & Datasets
