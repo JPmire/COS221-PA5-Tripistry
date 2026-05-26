@@ -1,5 +1,6 @@
 <?php
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
 header('Access-Control-Allow-Origin: *');
@@ -75,6 +76,18 @@ class TripistryAPI {
                 break;
             case 'CreateRestaurant':
                 $this->createRestaurant($data);
+                break;
+            case 'UpdateDestination':
+                $this->updateDestination($data);
+                break;
+            case 'UpdateAccommodation':
+                $this->updateAccommodation($data);
+                break;
+            case 'UpdateAttraction':
+                $this->updateAttraction($data);
+                break;
+            case 'UpdateRestaurant':
+                $this->updateRestaurant($data);
                 break;
             case 'UpdateAgencyProfile':
                 $this->updateAgencyProfile($data);
@@ -596,6 +609,90 @@ class TripistryAPI {
             $this->sendResponse("success", ["id" => $this->pdo->lastInsertId(), "message" => "Restaurant added!"]);
         } catch (\PDOException $e) {
             $this->sendResponse("error", "Failed to add restaurant: " . $e->getMessage(), 500);
+        }
+    }
+
+    private function updateDestination($data) {
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
+            $this->sendResponse("error", "Unauthorized.", 403);
+        }
+        if (empty($data['id']) || empty($data['name']) || empty($data['country'])) {
+            $this->sendResponse("error", "Missing required fields.", 400);
+        }
+        try {
+            $stmt = $this->pdo->prepare("UPDATE Destination SET Name = ?, Country = ?, Region = ?, ImageURL = ? WHERE DestID = ?");
+            $stmt->execute([trim($data['name']), trim($data['country']), trim($data['region'] ?? ''), trim($data['imageUrl'] ?? null), (int)$data['id']]);
+            $this->sendResponse("success", ["message" => "Destination updated!"]);
+        } catch (\PDOException $e) {
+            $this->sendResponse("error", "Failed to update destination: " . $e->getMessage(), 500);
+        }
+    }
+
+    private function updateAccommodation($data) {
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
+            $this->sendResponse("error", "Unauthorized.", 403);
+        }
+        if (empty($data['id']) || empty($data['name']) || !isset($data['pricePerNight'])) {
+            $this->sendResponse("error", "Missing required fields.", 400);
+        }
+        $accommType = trim($data['accommType'] ?? 'Hotel');
+        try {
+            $stmt = $this->pdo->prepare("UPDATE Accommodation SET Name = ?, Type = ?, PricePerNight = ?, StarRating = ?, ImageURL = ? WHERE AccommID = ?");
+            $stmt->execute([
+                trim($data['name']),
+                $accommType,
+                (float)$data['pricePerNight'],
+                !empty($data['starRating']) ? (int)$data['starRating'] : null,
+                trim($data['imageUrl'] ?? null),
+                (int)$data['id']
+            ]);
+            $this->sendResponse("success", ["message" => "Accommodation updated!"]);
+        } catch (\PDOException $e) {
+            $this->sendResponse("error", "Failed to update accommodation: " . $e->getMessage(), 500);
+        }
+    }
+
+    private function updateAttraction($data) {
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
+            $this->sendResponse("error", "Unauthorized.", 403);
+        }
+        if (empty($data['id']) || empty($data['name'])) {
+            $this->sendResponse("error", "Missing required fields.", 400);
+        }
+        try {
+            $stmt = $this->pdo->prepare("UPDATE Attraction SET Name = ?, Category = ?, EntryFee = ?, ImageURL = ? WHERE AttractionID = ?");
+            $stmt->execute([
+                trim($data['name']),
+                trim($data['category'] ?? ''),
+                !empty($data['entryFee']) ? (float)$data['entryFee'] : 0.00,
+                trim($data['imageUrl'] ?? null),
+                (int)$data['id']
+            ]);
+            $this->sendResponse("success", ["message" => "Attraction updated!"]);
+        } catch (\PDOException $e) {
+            $this->sendResponse("error", "Failed to update attraction: " . $e->getMessage(), 500);
+        }
+    }
+
+    private function updateRestaurant($data) {
+        if (empty($_SESSION['user_id']) || $_SESSION['role'] !== 'TravelAgency') {
+            $this->sendResponse("error", "Unauthorized.", 403);
+        }
+        if (empty($data['id']) || empty($data['name'])) {
+            $this->sendResponse("error", "Missing required fields.", 400);
+        }
+        try {
+            $stmt = $this->pdo->prepare("UPDATE Restaurant SET Name = ?, CuisineType = ?, AverageCost = ?, ImageURL = ? WHERE RestaurantID = ?");
+            $stmt->execute([
+                trim($data['name']),
+                trim($data['cuisineType'] ?? ''),
+                !empty($data['averageCost']) ? (float)$data['averageCost'] : 0.00,
+                trim($data['imageUrl'] ?? null),
+                (int)$data['id']
+            ]);
+            $this->sendResponse("success", ["message" => "Restaurant updated!"]);
+        } catch (\PDOException $e) {
+            $this->sendResponse("error", "Failed to update restaurant: " . $e->getMessage(), 500);
         }
     }
 

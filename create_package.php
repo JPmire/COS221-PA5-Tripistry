@@ -241,10 +241,15 @@ try {
                         <p class="text-sm text-muted italic col-span-full text-center py-2">No destinations defined yet.</p>
                     <?php else: ?>
                         <?php foreach ($destinations as $dest): ?>
-                            <label class="flex items-start gap-2.5 p-2 border border-outline-variant rounded hover:bg-background-light cursor-pointer select-none">
-                                <input type="checkbox" name="destinations[]" value="<?php echo $dest['DestID']; ?>" class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
-                                <span class="text-xs font-medium text-text-main leading-tight"><?php echo htmlspecialchars($dest['Name']) . ', ' . htmlspecialchars($dest['Country']); ?></span>
-                            </label>
+                            <div class="flex items-center justify-between p-2 border border-outline-variant rounded hover:bg-background-light group">
+                                <label class="flex items-start gap-2.5 cursor-pointer select-none flex-grow">
+                                    <input type="checkbox" name="destinations[]" value="<?php echo $dest['DestID']; ?>" class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+                                    <span class="text-xs font-medium text-text-main leading-tight dest-label"><?php echo htmlspecialchars($dest['Name']) . ', ' . htmlspecialchars($dest['Country']); ?></span>
+                                </label>
+                                <button type="button" class="text-muted hover:text-primary transition-colors ml-1 hidden group-hover:block shrink-0" onclick="openEditAssetModal('Destination', <?php echo $dest['DestID']; ?>, '<?php echo htmlspecialchars($dest['Name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($dest['Country'] ?? '', ENT_QUOTES); ?>', '<?php echo htmlspecialchars($dest['Region'] ?? '', ENT_QUOTES); ?>', '<?php echo htmlspecialchars($dest['ImageURL'] ?? '', ENT_QUOTES); ?>')">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                                </button>
+                            </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -268,13 +273,18 @@ try {
                         <p class="text-sm text-muted italic col-span-full text-center py-2">No accommodations defined yet.</p>
                     <?php else: ?>
                         <?php foreach ($accommodations as $accomm): ?>
-                            <label class="flex items-start gap-2.5 p-2 border border-outline-variant rounded hover:bg-background-light cursor-pointer select-none">
-                                <input type="checkbox" name="accommodations[]" value="<?php echo $accomm['AccommID']; ?>" class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
-                                <span class="text-xs font-medium text-text-main leading-tight">
-                                    <?php echo htmlspecialchars($accomm['Name']); ?>
-                                    <span class="block text-[10px] text-muted font-normal uppercase mt-0.5"><?php echo htmlspecialchars($accomm['Type']); ?> • <?php echo formatCurrency($accomm['PricePerNight']); ?>/night</span>
-                                </span>
-                            </label>
+                            <div class="flex items-center justify-between p-2 border border-outline-variant rounded hover:bg-background-light group">
+                                <label class="flex items-start gap-2.5 cursor-pointer select-none flex-grow">
+                                    <input type="checkbox" name="accommodations[]" value="<?php echo $accomm['AccommID']; ?>" class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+                                    <span class="text-xs font-medium text-text-main leading-tight accomm-label">
+                                        <?php echo htmlspecialchars($accomm['Name']); ?>
+                                        <span class="block text-[10px] text-muted font-normal uppercase mt-0.5 details"><?php echo htmlspecialchars($accomm['Type']); ?> • <?php echo formatCurrency($accomm['PricePerNight']); ?>/night</span>
+                                    </span>
+                                </label>
+                                <button type="button" class="text-muted hover:text-primary transition-colors ml-1 hidden group-hover:block shrink-0" onclick="openEditAssetModal('Accommodation', <?php echo $accomm['AccommID']; ?>, '<?php echo htmlspecialchars($accomm['Name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($accomm['Type'], ENT_QUOTES); ?>', '<?php echo $accomm['PricePerNight']; ?>', '<?php echo htmlspecialchars($accomm['ImageURL'] ?? '', ENT_QUOTES); ?>', '<?php echo $accomm['StarRating']; ?>')">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                                </button>
+                            </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -328,13 +338,18 @@ try {
                         <p class="text-sm text-muted italic col-span-full text-center py-2">No attractions defined yet.</p>
                     <?php else: ?>
                         <?php foreach ($attractions as $attr): ?>
-                            <label class="flex items-start gap-2.5 p-2 border border-outline-variant rounded hover:bg-background-light cursor-pointer select-none">
-                                <input type="checkbox" name="attractions[]" value="<?php echo $attr['AttractionID']; ?>" class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
-                                <span class="text-xs font-medium text-text-main leading-tight">
-                                    <?php echo htmlspecialchars($attr['Name']); ?>
-                                    <span class="block text-[10px] text-muted font-normal uppercase mt-0.5"><?php echo htmlspecialchars($attr['Category']); ?> • Entry: <?php echo formatCurrency($attr['EntryFee']); ?></span>
-                                </span>
-                            </label>
+                            <div class="flex items-center justify-between p-2 border border-outline-variant rounded hover:bg-background-light group">
+                                <label class="flex items-start gap-2.5 cursor-pointer select-none flex-grow">
+                                    <input type="checkbox" name="attractions[]" value="<?php echo $attr['AttractionID']; ?>" class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+                                    <span class="text-xs font-medium text-text-main leading-tight attraction-label">
+                                        <?php echo htmlspecialchars($attr['Name']); ?>
+                                        <span class="block text-[10px] text-muted font-normal uppercase mt-0.5 details"><?php echo htmlspecialchars($attr['Category']); ?> • Entry: <?php echo formatCurrency($attr['EntryFee']); ?></span>
+                                    </span>
+                                </label>
+                                <button type="button" class="text-muted hover:text-primary transition-colors ml-1 hidden group-hover:block shrink-0" onclick="openEditAssetModal('Attraction', <?php echo $attr['AttractionID']; ?>, '<?php echo htmlspecialchars($attr['Name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($attr['Category'] ?? '', ENT_QUOTES); ?>', '<?php echo $attr['EntryFee']; ?>', '<?php echo htmlspecialchars($attr['ImageURL'] ?? '', ENT_QUOTES); ?>')">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                                </button>
+                            </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -358,13 +373,18 @@ try {
                         <p class="text-sm text-muted italic col-span-full text-center py-2">No restaurants defined yet.</p>
                     <?php else: ?>
                         <?php foreach ($restaurants as $rest): ?>
-                            <label class="flex items-start gap-2.5 p-2 border border-outline-variant rounded hover:bg-background-light cursor-pointer select-none">
-                                <input type="checkbox" name="restaurants[]" value="<?php echo $rest['RestaurantID']; ?>" class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
-                                <span class="text-xs font-medium text-text-main leading-tight">
-                                    <?php echo htmlspecialchars($rest['Name']); ?>
-                                    <span class="block text-[10px] text-muted font-normal uppercase mt-0.5"><?php echo htmlspecialchars($rest['CuisineType']); ?> • Avg: <?php echo formatCurrency($rest['AverageCost']); ?></span>
-                                </span>
-                            </label>
+                            <div class="flex items-center justify-between p-2 border border-outline-variant rounded hover:bg-background-light group">
+                                <label class="flex items-start gap-2.5 cursor-pointer select-none flex-grow">
+                                    <input type="checkbox" name="restaurants[]" value="<?php echo $rest['RestaurantID']; ?>" class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+                                    <span class="text-xs font-medium text-text-main leading-tight restaurant-label">
+                                        <?php echo htmlspecialchars($rest['Name']); ?>
+                                        <span class="block text-[10px] text-muted font-normal uppercase mt-0.5 details"><?php echo htmlspecialchars($rest['CuisineType']); ?> • Avg: <?php echo formatCurrency($rest['AverageCost']); ?></span>
+                                    </span>
+                                </label>
+                                <button type="button" class="text-muted hover:text-primary transition-colors ml-1 hidden group-hover:block shrink-0" onclick="openEditAssetModal('Restaurant', <?php echo $rest['RestaurantID']; ?>, '<?php echo htmlspecialchars($rest['Name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($rest['CuisineType'] ?? '', ENT_QUOTES); ?>', '<?php echo $rest['AverageCost']; ?>', '<?php echo htmlspecialchars($rest['ImageURL'] ?? '', ENT_QUOTES); ?>')">
+                                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                                </button>
+                            </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -592,6 +612,137 @@ try {
         <div class="flex justify-end gap-3 pt-4 border-t border-outline-variant mt-4">
             <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeStockGallery()">Cancel</button>
         </div>
+    </div>
+</div>
+
+<!-- Edit Destination Modal -->
+<div id="modal-edit-destination" class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-card shadow-2xl border border-outline-variant w-full max-w-[420px] p-6 animate-in fade-in zoom-in duration-150">
+        <h3 class="text-lg font-heading font-semibold text-text-main mb-4 flex items-center gap-1.5"><span class="material-symbols-outlined text-primary">edit_location</span> Edit Destination</h3>
+        <form onsubmit="submitEditModal(event, 'Destination')" class="flex flex-col gap-4">
+            <input type="hidden" id="edit-destination-id">
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">City Name *</label>
+                <input type="text" id="edit-destination-name" required class="input-field h-[40px] text-sm" placeholder="e.g. Paris">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Country *</label>
+                <input type="text" id="edit-destination-country" required class="input-field h-[40px] text-sm" placeholder="e.g. France">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Region (Optional)</label>
+                <input type="text" id="edit-destination-region" class="input-field h-[40px] text-sm" placeholder="e.g. Europe">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Image URL (Optional)</label>
+                <input type="url" id="edit-destination-image" class="input-field h-[40px] text-sm" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeEditModal('destination')">Cancel</button>
+                <button type="submit" class="bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:opacity-95 transition-opacity">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Accommodation Modal -->
+<div id="modal-edit-accommodation" class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-card shadow-2xl border border-outline-variant w-full max-w-[420px] p-6 animate-in fade-in zoom-in duration-150">
+        <h3 class="text-lg font-heading font-semibold text-text-main mb-4 flex items-center gap-1.5"><span class="material-symbols-outlined text-primary">edit</span> Edit Accommodation</h3>
+        <form onsubmit="submitEditModal(event, 'Accommodation')" class="flex flex-col gap-4">
+            <input type="hidden" id="edit-accommodation-id">
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Accommodation Name *</label>
+                <input type="text" id="edit-accommodation-name" required class="input-field h-[40px] text-sm" placeholder="e.g. Eiffel Suites">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Type *</label>
+                    <select id="edit-accommodation-type" required class="input-field h-[40px] text-sm py-0">
+                        <option value="Hotel">Hotel</option>
+                        <option value="Resort">Resort</option>
+                        <option value="Villa">Villa</option>
+                        <option value="Apartment">Apartment</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Price per Night (R) *</label>
+                    <input type="number" id="edit-accommodation-price" required min="0" class="input-field h-[40px] text-sm" placeholder="0.00">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Star Rating (1-5)</label>
+                <input type="number" id="edit-accommodation-stars" min="1" max="5" class="input-field h-[40px] text-sm" placeholder="e.g. 4">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Image URL (Optional)</label>
+                <input type="url" id="edit-accommodation-image" class="input-field h-[40px] text-sm" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeEditModal('accommodation')">Cancel</button>
+                <button type="submit" class="bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:opacity-95 transition-opacity">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Attraction Modal -->
+<div id="modal-edit-attraction" class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-card shadow-2xl border border-outline-variant w-full max-w-[420px] p-6 animate-in fade-in zoom-in duration-150">
+        <h3 class="text-lg font-heading font-semibold text-text-main mb-4 flex items-center gap-1.5"><span class="material-symbols-outlined text-primary">edit</span> Edit Attraction</h3>
+        <form onsubmit="submitEditModal(event, 'Attraction')" class="flex flex-col gap-4">
+            <input type="hidden" id="edit-attraction-id">
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Attraction Name *</label>
+                <input type="text" id="edit-attraction-name" required class="input-field h-[40px] text-sm" placeholder="e.g. Louvre Museum">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Category</label>
+                <input type="text" id="edit-attraction-category" class="input-field h-[40px] text-sm" placeholder="e.g. Museum, Landmark, Beach">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Entry Fee (R)</label>
+                <input type="number" id="edit-attraction-fee" min="0" step="0.01" class="input-field h-[40px] text-sm" placeholder="0.00">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Image URL (Optional)</label>
+                <input type="url" id="edit-attraction-image" class="input-field h-[40px] text-sm" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeEditModal('attraction')">Cancel</button>
+                <button type="submit" class="bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:opacity-95 transition-opacity">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Restaurant Modal -->
+<div id="modal-edit-restaurant" class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-surface rounded-card shadow-2xl border border-outline-variant w-full max-w-[420px] p-6 animate-in fade-in zoom-in duration-150">
+        <h3 class="text-lg font-heading font-semibold text-text-main mb-4 flex items-center gap-1.5"><span class="material-symbols-outlined text-primary">edit</span> Edit Restaurant</h3>
+        <form onsubmit="submitEditModal(event, 'Restaurant')" class="flex flex-col gap-4">
+            <input type="hidden" id="edit-restaurant-id">
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Restaurant Name *</label>
+                <input type="text" id="edit-restaurant-name" required class="input-field h-[40px] text-sm" placeholder="e.g. Le Jules Verne">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Cuisine Type</label>
+                <input type="text" id="edit-restaurant-cuisine" class="input-field h-[40px] text-sm" placeholder="e.g. French, Japanese Ramen, Vegan">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Average Cost per Meal (R)</label>
+                <input type="number" id="edit-restaurant-cost" min="0" step="0.01" class="input-field h-[40px] text-sm" placeholder="0.00">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Image URL (Optional)</label>
+                <input type="url" id="edit-restaurant-image" class="input-field h-[40px] text-sm" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" class="px-4 py-2 border border-outline-variant rounded-md text-sm text-text-main hover:bg-background-light font-medium" onclick="closeEditModal('restaurant')">Cancel</button>
+                <button type="submit" class="bg-primary text-white px-5 py-2 rounded-md text-sm font-semibold hover:opacity-95 transition-opacity">Save Changes</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -851,11 +1002,17 @@ try {
                     placeholder.remove();
                 }
 
+                const onclickParams = `'Destination', ${insertedId}, '${name.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}', '', ''`;
                 const newCardHTML = `
-                <label class="flex items-start gap-2.5 p-2 border border-primary/50 bg-primary/5 rounded hover:bg-background-light cursor-pointer select-none">
-                    <input type="checkbox" name="destinations[]" value="${insertedId}" checked class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
-                    <span class="text-xs font-medium text-text-main leading-tight">${name}, ${country}</span>
-                </label>`;
+                <div class="flex items-center justify-between p-2 border border-primary/50 bg-primary/5 rounded hover:bg-background-light group">
+                    <label class="flex items-start gap-2.5 cursor-pointer select-none flex-grow">
+                        <input type="checkbox" name="destinations[]" value="${insertedId}" checked class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+                        <span class="text-xs font-medium text-text-main leading-tight dest-label">${name}, ${country}</span>
+                    </label>
+                    <button type="button" class="text-muted hover:text-primary transition-colors ml-1 hidden group-hover:block shrink-0" onclick="openEditAssetModal(${onclickParams})">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
+                </div>`;
                 
                 listContainer.insertAdjacentHTML('afterbegin', newCardHTML);
             } else {
@@ -894,22 +1051,34 @@ try {
                 let labelText = payload.name;
                 let detailsText = '';
                 let fieldName = '';
+                let onclickParams = '';
                 if (lowercaseType === 'accommodation') {
                     detailsText = payload.type + ' • R ' + payload.price.toFixed(2) + '/night';
                     fieldName = 'accommodations[]';
-                } else {
+                    onclickParams = `'Accommodation', ${insertedId}, '${payload.name.replace(/'/g, "\\'")}', '${payload.type.replace(/'/g, "\\'")}', '${payload.price}', '', '${payload.rating || ''}'`;
+                } else if (lowercaseType === 'attraction') {
                     detailsText = payload.category + ' • Entry: ' + (payload.fee > 0 ? 'R ' + payload.fee.toFixed(2) : 'FREE');
                     fieldName = 'attractions[]';
+                    onclickParams = `'Attraction', ${insertedId}, '${payload.name.replace(/'/g, "\\'")}', '${payload.category.replace(/'/g, "\\'")}', '${payload.fee}', ''`;
+                } else if (lowercaseType === 'restaurant') {
+                    detailsText = payload.cuisineType + ' • Avg: ' + (payload.averageCost > 0 ? 'R ' + payload.averageCost.toFixed(2) : 'FREE');
+                    fieldName = 'restaurants[]';
+                    onclickParams = `'Restaurant', ${insertedId}, '${payload.name.replace(/'/g, "\\'")}', '${payload.cuisineType.replace(/'/g, "\\'")}', '${payload.averageCost}', ''`;
                 }
 
                 const newCardHTML = `
-                <label class="flex items-start gap-2.5 p-2 border border-primary/50 bg-primary/5 rounded hover:bg-background-light cursor-pointer select-none">
-                    <input type="checkbox" name="${fieldName}" value="${insertedId}" checked class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
-                    <span class="text-xs font-medium text-text-main leading-tight">
-                        ${labelText}
-                        <span class="block text-[10px] text-muted font-normal uppercase mt-0.5">${detailsText}</span>
-                    </span>
-                </label>`;
+                <div class="flex items-center justify-between p-2 border border-primary/50 bg-primary/5 rounded hover:bg-background-light group">
+                    <label class="flex items-start gap-2.5 cursor-pointer select-none flex-grow">
+                        <input type="checkbox" name="${fieldName}" value="${insertedId}" checked class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+                        <span class="text-xs font-medium text-text-main leading-tight ${lowercaseType}-label">
+                            ${labelText}
+                            ${detailsText ? `<span class="block text-[10px] text-muted font-normal uppercase mt-0.5 details">${detailsText}</span>` : ''}
+                        </span>
+                    </label>
+                    <button type="button" class="text-muted hover:text-primary transition-colors ml-1 hidden group-hover:block shrink-0" onclick="openEditAssetModal(${onclickParams})">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
+                </div>`;
                 
                 listContainer.insertAdjacentHTML('afterbegin', newCardHTML);
             } else {
@@ -1000,14 +1169,42 @@ try {
 
                 const fieldName = lowercaseType === 'accommodation' ? 'accommodations[]' : lowercaseType === 'destination' ? 'destinations[]' : lowercaseType === 'flight' ? 'flights[]' : lowercaseType === 'attraction' ? 'attractions[]' : 'restaurants[]';
 
-                const newCardHTML = `
-                <label class="flex items-start gap-2.5 p-2 border border-primary/50 bg-primary/5 rounded hover:bg-background-light cursor-pointer select-none">
-                    <input type="checkbox" name="${fieldName}" value="${insertedId}" checked class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
-                    <span class="text-xs font-medium text-text-main leading-tight">
-                        ${labelText}
-                        ${detailsText ? `<span class="block text-[10px] text-muted font-normal uppercase mt-0.5">${detailsText}</span>` : ''}
-                    </span>
-                </label>`;
+                let newCardHTML = '';
+                if (lowercaseType === 'flight') {
+                    newCardHTML = `
+                    <label class="flex items-start gap-2.5 p-2 border border-primary/50 bg-primary/5 rounded hover:bg-background-light cursor-pointer select-none">
+                        <input type="checkbox" name="${fieldName}" value="${insertedId}" checked class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+                        <span class="text-xs font-medium text-text-main leading-tight">
+                            ${labelText}
+                            ${detailsText ? `<span class="block text-[10px] text-muted font-normal uppercase mt-0.5">${detailsText}</span>` : ''}
+                        </span>
+                    </label>`;
+                } else {
+                    let onclickParams = '';
+                    if (componentName === 'Destination') {
+                        onclickParams = `'Destination', ${insertedId}, '${payload.name.replace(/'/g, "\\'")}', '${payload.country.replace(/'/g, "\\'")}', '${payload.region.replace(/'/g, "\\'")}', '${(payload.imageUrl || '').replace(/'/g, "\\'")}'`;
+                    } else if (componentName === 'Accommodation') {
+                        onclickParams = `'Accommodation', ${insertedId}, '${payload.name.replace(/'/g, "\\'")}', '${payload.accommType.replace(/'/g, "\\'")}', '${payload.pricePerNight}', '${(payload.imageUrl || '').replace(/'/g, "\\'")}', '${payload.starRating}'`;
+                    } else if (componentName === 'Attraction') {
+                        onclickParams = `'Attraction', ${insertedId}, '${payload.name.replace(/'/g, "\\'")}', '${payload.category.replace(/'/g, "\\'")}', '${payload.entryFee}', '${(payload.imageUrl || '').replace(/'/g, "\\'")}'`;
+                    } else if (componentName === 'Restaurant') {
+                        onclickParams = `'Restaurant', ${insertedId}, '${payload.name.replace(/'/g, "\\'")}', '${payload.cuisineType.replace(/'/g, "\\'")}', '${payload.averageCost}', '${(payload.imageUrl || '').replace(/'/g, "\\'")}'`;
+                    }
+
+                    newCardHTML = `
+                    <div class="flex items-center justify-between p-2 border border-primary/50 bg-primary/5 rounded hover:bg-background-light group">
+                        <label class="flex items-start gap-2.5 cursor-pointer select-none flex-grow">
+                            <input type="checkbox" name="${fieldName}" value="${insertedId}" checked class="rounded border-outline-variant text-primary focus:ring-primary mt-0.5">
+                            <span class="text-xs font-medium text-text-main leading-tight ${lowercaseType}-label">
+                                ${labelText}
+                                ${detailsText ? `<span class="block text-[10px] text-muted font-normal uppercase mt-0.5 details">${detailsText}</span>` : ''}
+                            </span>
+                        </label>
+                        <button type="button" class="text-muted hover:text-primary transition-colors ml-1 hidden group-hover:block shrink-0" onclick="openEditAssetModal(${onclickParams})">
+                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                        </button>
+                    </div>`;
+                }
 
                 listContainer.insertAdjacentHTML('afterbegin', newCardHTML);
                 closeQuickModal(lowercaseType === 'accommodation' ? 'accomm' : lowercaseType === 'destination' ? 'dest' : lowercaseType === 'flight' ? 'flight' : lowercaseType === 'attraction' ? 'attraction' : 'restaurant');
@@ -1016,6 +1213,116 @@ try {
             }
         } catch (err) {
             alert('Failed to insert component: ' + err.message);
+        }
+    }
+
+    function openEditAssetModal(type, id, val1, val2, val3, imageUrl, val4) {
+        const t = type.toLowerCase();
+        document.getElementById('modal-edit-' + t).style.display = 'flex';
+        document.getElementById('modal-edit-' + t).classList.remove('hidden');
+        
+        document.getElementById('edit-' + t + '-id').value = id;
+        document.getElementById('edit-' + t + '-name').value = val1;
+        document.getElementById('edit-' + t + '-image').value = imageUrl;
+
+        if (type === 'Destination') {
+            document.getElementById('edit-destination-country').value = val2;
+            document.getElementById('edit-destination-region').value = val3;
+        } else if (type === 'Accommodation') {
+            document.getElementById('edit-accommodation-type').value = val2;
+            document.getElementById('edit-accommodation-price').value = val3;
+            document.getElementById('edit-accommodation-stars').value = val4 || '';
+        } else if (type === 'Attraction') {
+            document.getElementById('edit-attraction-category').value = val2;
+            document.getElementById('edit-attraction-fee').value = val3;
+        } else if (type === 'Restaurant') {
+            document.getElementById('edit-restaurant-cuisine').value = val2;
+            document.getElementById('edit-restaurant-cost').value = val3;
+        }
+    }
+
+    function closeEditModal(t) {
+        document.getElementById('modal-edit-' + t).style.display = 'none';
+        document.getElementById('modal-edit-' + t).classList.add('hidden');
+    }
+
+    async function submitEditModal(e, componentName) {
+        e.preventDefault();
+        const type = 'Update' + componentName;
+        const lowercaseType = componentName.toLowerCase();
+        let payload = { type: type };
+
+        const id = parseInt(document.getElementById('edit-' + lowercaseType + '-id').value);
+        payload.id = id;
+
+        if (componentName === 'Destination') {
+            payload.name = document.getElementById('edit-destination-name').value;
+            payload.country = document.getElementById('edit-destination-country').value;
+            payload.region = document.getElementById('edit-destination-region').value;
+            payload.imageUrl = document.getElementById('edit-destination-image').value;
+        } else if (componentName === 'Accommodation') {
+            payload.name = document.getElementById('edit-accommodation-name').value;
+            payload.accommType = document.getElementById('edit-accommodation-type').value;
+            payload.pricePerNight = parseFloat(document.getElementById('edit-accommodation-price').value);
+            payload.starRating = parseInt(document.getElementById('edit-accommodation-stars').value);
+            payload.imageUrl = document.getElementById('edit-accommodation-image').value;
+        } else if (componentName === 'Attraction') {
+            payload.name = document.getElementById('edit-attraction-name').value;
+            payload.category = document.getElementById('edit-attraction-category').value;
+            payload.entryFee = parseFloat(document.getElementById('edit-attraction-fee').value);
+            payload.imageUrl = document.getElementById('edit-attraction-image').value;
+        } else if (componentName === 'Restaurant') {
+            payload.name = document.getElementById('edit-restaurant-name').value;
+            payload.cuisineType = document.getElementById('edit-restaurant-cuisine').value;
+            payload.averageCost = parseFloat(document.getElementById('edit-restaurant-cost').value);
+            payload.imageUrl = document.getElementById('edit-restaurant-image').value;
+        }
+
+        try {
+            const res = await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            
+            if (data.status === 'success') {
+                const listContainer = document.getElementById('acc-' + (lowercaseType === 'accommodation' ? 'accomm' : lowercaseType === 'destination' ? 'dest' : lowercaseType === 'attraction' ? 'attractions' : 'restaurants'));
+                const inputs = listContainer.querySelectorAll('input[type="checkbox"]');
+                inputs.forEach(input => {
+                    if (parseInt(input.value) === id) {
+                        const container = input.closest('.flex');
+                        const labelSpan = container.querySelector('.' + lowercaseType + '-label');
+                        
+                        if (componentName === 'Destination') {
+                            labelSpan.textContent = payload.name + ', ' + payload.country;
+                        } else if (componentName === 'Accommodation') {
+                            labelSpan.innerHTML = payload.name + `<span class="block text-[10px] text-muted font-normal uppercase mt-0.5 details">${payload.accommType} • R ${payload.pricePerNight.toFixed(2)}/night</span>`;
+                        } else if (componentName === 'Attraction') {
+                            labelSpan.innerHTML = payload.name + `<span class="block text-[10px] text-muted font-normal uppercase mt-0.5 details">${payload.category} • Entry: R ${payload.entryFee.toFixed(2)}</span>`;
+                        } else if (componentName === 'Restaurant') {
+                            labelSpan.innerHTML = payload.name + `<span class="block text-[10px] text-muted font-normal uppercase mt-0.5 details">${payload.cuisineType} • Avg: R ${payload.averageCost.toFixed(2)}</span>`;
+                        }
+
+                        const btn = container.querySelector('button');
+                        if (componentName === 'Destination') {
+                            btn.setAttribute('onclick', `openEditAssetModal('Destination', ${id}, '${payload.name.replace(/'/g, "\\'")}', '${payload.country.replace(/'/g, "\\'")}', '${payload.region.replace(/'/g, "\\'")}', '${payload.imageUrl.replace(/'/g, "\\'")}')`);
+                        } else if (componentName === 'Accommodation') {
+                            btn.setAttribute('onclick', `openEditAssetModal('Accommodation', ${id}, '${payload.name.replace(/'/g, "\\'")}', '${payload.accommType.replace(/'/g, "\\'")}', '${payload.pricePerNight}', '${payload.imageUrl.replace(/'/g, "\\'")}', '${payload.starRating}')`);
+                        } else if (componentName === 'Attraction') {
+                            btn.setAttribute('onclick', `openEditAssetModal('Attraction', ${id}, '${payload.name.replace(/'/g, "\\'")}', '${payload.category.replace(/'/g, "\\'")}', '${payload.entryFee}', '${payload.imageUrl.replace(/'/g, "\\'")}')`);
+                        } else if (componentName === 'Restaurant') {
+                            btn.setAttribute('onclick', `openEditAssetModal('Restaurant', ${id}, '${payload.name.replace(/'/g, "\\'")}', '${payload.cuisineType.replace(/'/g, "\\'")}', '${payload.averageCost}', '${payload.imageUrl.replace(/'/g, "\\'")}')`);
+                        }
+                    }
+                });
+
+                closeEditModal(lowercaseType);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        } catch (err) {
+            alert('Failed to update component: ' + err.message);
         }
     }
 </script>
