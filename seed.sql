@@ -3,15 +3,15 @@
 -- 1. SUPERCLASS: USERS
 -- IDs 1-3 are Agencies. IDs 4-9 are Travellers.
 INSERT INTO User (UserID, Email, PasswordHash, DateJoined, LastLoginTime, AccountStatus) VALUES
-(1, 'rebecca@richmond.co.uk', '$2y$10$LXS0cfgAFi0nB9DKe8oaLuqmgftHfBfVv.PI26EEGWYDLqh6mENlK', '2025-01-01', NOW(), 'Active'),
-(2, 'cecil@gda.gov', '$2y$10$uAeZwmYuE/SCOq0MlI8N7uGAyc1wZBIUeFEBMy2DMEjdro4hPXdmW', '2025-01-05', NOW(), 'Active'),
-(3, 'ashley@vought.com', '$2y$10$IiXY3lwhKW8kRSeopxP0xe7XzOapYQOVnxRd0qxSdUXZGhRzLb.KW', '2025-01-10', NOW(), 'Active'),
-(4, 'ted.lasso@gmail.com', '$2y$10$rqsrImW79UwznHkpNNO3KOVZCP2uPWMuqlNdM/yDsO8kuDCTzdl7O', '2025-02-01', NOW(), 'Active'),
-(5, 'roy.kent@chelsea.com', '$2y$10$OM2tcDY.hfs3UpxLJ.d6f.KOUkZXGLmgnjpE/wdBRKI90KEyv6rE6', '2025-02-02', NOW(), 'Active'),
-(6, 'mark.grayson@highschool.edu', '$2y$10$kZwOw4MW0Q6N13UCP1tQ2eg8fLzLPlFX9SQSozln4PtGB.lXZrRMW', '2025-02-03', NOW(), 'Active'),
-(7, 'nolan@viltrum.org', '$2y$10$VXI2408QOMpAnplv0WRhp.6aX8UuLZse1U93HrwQzCEUWzGRw1ALa', '2025-02-04', NOW(), 'Active'),
-(8, 'butcher@theboys.co.uk', '$2y$10$AWfKDazV5gCIOpdWJYUfx.6tKubfsXF127c5rXs/0N9IsB.3brByC', '2025-02-05', NOW(), 'Active'),
-(9, 'hughie@electronics.com', '$2y$10$1FreBYSAyLR5ZAPg50L/vOB3gcz3/Aph9fEz7lRu13RZsEKBFZVnS', '2025-02-06', NOW(), 'Active');
+(1, 'rebecca@richmond.co.uk', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-01', NOW(), 'Active'),
+(2, 'cecil@gda.gov', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-05', NOW(), 'Active'),
+(3, 'ashley@vought.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-10', NOW(), 'Active'),
+(4, 'ted.lasso@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-01', NOW(), 'Active'),
+(5, 'roy.kent@chelsea.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-02', NOW(), 'Active'),
+(6, 'mark.grayson@highschool.edu', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-03', NOW(), 'Active'),
+(7, 'nolan@viltrum.org', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-04', NOW(), 'Active'),
+(8, 'butcher@theboys.co.uk', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-05', NOW(), 'Active'),
+(9, 'hughie@electronics.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-06', NOW(), 'Active');
 
 -- 2. SUBCLASSES: AGENCIES & TRAVELLERS
 INSERT INTO TravelAgency (UserID, AgencyName, RegistrationNumber, AverageRating, Address_Street, Address_City, Address_Zip) VALUES
