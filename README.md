@@ -103,13 +103,13 @@ To test all aspects of the application without registering new accounts, use the
 ### 🏢 Travel Agency Accounts
 Use these to manage catalogs, schedule date ranges, view Chart.js analytics, and interact with the CRM insights directory:
 *   **Richmond AFC Tours** (Rating: 4.80):
-    *   **Email**: `rebecca@gmail.com`
+    *   **Email**: `rebecca@agency.tripistry.com`
     *   **Password**: `password123`
 *   **GDA Defense Travel** (Rating: 4.10):
-    *   **Email**: `cecil@gmail.com`
+    *   **Email**: `cecil@agency.tripistry.com`
     *   **Password**: `password123`
 *   **Vought International Getaways** (Rating: 4.90):
-    *   **Email**: `ashley@gmail.com`
+    *   **Email**: `ashley@agency.tripistry.com`
     *   **Password**: `password123`
 
 ### 🧑‍🚀 Explorer Traveller Accounts

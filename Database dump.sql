@@ -239,13 +239,13 @@ CREATE TABLE Notification (
     FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE CASCADE
 );
 
--- Populate DB
+-- -- Populate DB
 -- 1. SUPERCLASS: USERS
 -- IDs 1-3 are Agencies. IDs 4-9 are Travellers.
 INSERT INTO User (UserID, Email, PasswordHash, DateJoined, LastLoginTime, AccountStatus) VALUES
-(1, 'rebecca@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-01', NOW(), 'Active'),
-(2, 'cecil@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-05', NOW(), 'Active'),
-(3, 'ashley@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-10', NOW(), 'Active'),
+(1, 'rebecca@agency.tripistry.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-01', NOW(), 'Active'),
+(2, 'cecil@agency.tripistry.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-05', NOW(), 'Active'),
+(3, 'ashley@agency.tripistry.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-10', NOW(), 'Active'),
 (4, 'ted.lasso@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-01', NOW(), 'Active'),
 (5, 'roy.kent@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-02', NOW(), 'Active'),
 (6, 'mark.grayson@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-03', NOW(), 'Active'),
@@ -275,50 +275,64 @@ INSERT INTO TravelAgency_Contacts (UserID, ContactNumber) VALUES
 (1, '+44 20 7946 0958'), (2, 'CLASSIFIED-911'), (3, '1-800-VOUGHT');
 
 -- 4. REGULAR ENTITIES (Locations, Flights, etc.)
-INSERT INTO Destination (DestID, Name, Country, Region, PopularityScore, Coordinates_Lat, Coordinates_Long) VALUES
-(1, 'Richmond Borough', 'United Kingdom', 'Greater London', 85, 51.4613, -0.3037),
-(2, 'GDA Headquarters', 'United States', 'Illinois', 75, 41.8781, -87.6298),
-(3, 'Vought Square', 'United States', 'New York', 99, 40.7128, -74.0060);
+INSERT INTO Destination (DestID, Name, Country, Region, PopularityScore, Coordinates_Lat, Coordinates_Long, ImageURL) VALUES
+(1, 'Richmond Borough', 'United Kingdom', 'Greater London', 85, 51.4613, -0.3037, 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=600&q=80'),
+(2, 'GDA Headquarters', 'United States', 'Illinois', 75, 41.8781, -87.6298, 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=600&q=80'),
+(3, 'Vought Square', 'United States', 'New York', 99, 40.7128, -74.0060, 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=600&q=80'),
+(4, 'Cape Town', 'South Africa', 'Western Cape', 92, -33.9249, 18.4241, 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?auto=format&fit=crop&w=600&q=80'),
+(5, 'Tokyo', 'Japan', 'Kanto', 98, 35.6762, 139.6503, 'https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?auto=format&fit=crop&w=600&q=80');
 
 INSERT INTO Flight (FlightID, Airline, FlightNum, DepTime, ArrTime, Cost, DepAirport_Code, DepAirport_Name, ArrAirport_Code, ArrAirport_Name) VALUES
 (1, 'Believe Airways', 'BA-10', '2026-06-01 08:00:00', '2026-06-01 10:00:00', 350.00, 'JFK', 'JFK Intl', 'LHR', 'Heathrow'),
 (2, 'Stealth Aviation', 'SA-99', '2026-07-15 23:00:00', '2026-07-16 02:00:00', 1200.00, 'LHR', 'Heathrow', 'ORD', 'O-Hare Intl'),
-(3, 'VoughtAir VIP', 'VGT-7', '2026-08-10 14:00:00', '2026-08-10 16:30:00', 2500.00, 'ORD', 'O-Hare Intl', 'JFK', 'JFK Intl');
+(3, 'VoughtAir VIP', 'VGT-7', '2026-08-10 14:00:00', '2026-08-10 16:30:00', 2500.00, 'ORD', 'O-Hare Intl', 'JFK', 'JFK Intl'),
+(4, 'Safari Express', 'SE-101', '2026-09-01 06:00:00', '2026-09-01 18:00:00', 950.00, 'LHR', 'Heathrow', 'CPT', 'Cape Town Intl'),
+(5, 'Ninja Airways', 'NA-404', '2026-10-10 10:00:00', '2026-10-11 02:00:00', 1100.00, 'JFK', 'JFK Intl', 'NRT', 'Narita Airport');
 
-INSERT INTO Accommodation (AccommID, Name, Type, PricePerNight, StarRating, Address_Street, Address_City, Address_Zip, Coordinates_Lat, Coordinates_Long) VALUES
-(1, 'The Crown & Anchor Inn', 'B&B', 150.00, 3, '22 Richmond Green', 'London', 'TW9 1NL', 51.4610, -0.3030),
-(2, 'GDA Pentagon Safehouse', 'Bunker', 50.00, 1, 'Classified', 'Chicago', '60007', 41.8780, -87.6290),
-(3, 'The Seven Luxury Suites', 'Hotel', 1000.00, 5, 'Vought Tower Top Floor', 'New York', '10001', 40.7130, -74.0065);
+INSERT INTO Accommodation (AccommID, Name, Type, PricePerNight, StarRating, Address_Street, Address_City, Address_Zip, Coordinates_Lat, Coordinates_Long, ImageURL) VALUES
+(1, 'The Crown & Anchor Inn', 'B&B', 150.00, 3, '22 Richmond Green', 'London', 'TW9 1NL', 51.4610, -0.3030, 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80'),
+(2, 'GDA Pentagon Safehouse', 'Bunker', 50.00, 1, 'Classified', 'Chicago', '60007', 41.8780, -87.6290, 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=600&q=80'),
+(3, 'The Seven Luxury Suites', 'Hotel', 1000.00, 5, 'Vought Tower Top Floor', 'New York', '10001', 40.7130, -74.0065, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80'),
+(4, 'Table Mountain Lodge', 'Hotel', 250.00, 5, '100 Tafelberg Road', 'Cape Town', '8001', -33.9250, 18.4240, 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=600&q=80'),
+(5, 'Shibuya Capsule Hotel', 'Hostel', 45.00, 3, '2-1 Shibuya', 'Tokyo', '150-0002', 35.6760, 139.6500, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80');
 
-INSERT INTO Attraction (AttractionID, Name, Category, EntryFee, Coordinates_Lat, Coordinates_Long) VALUES
-(1, 'Nelson Road Stadium', 'Sports', 45.00, 51.4615, -0.3040),
-(2, 'Guardians of the Globe Base', 'Museum', 15.00, 41.8790, -87.6300),
-(3, 'Dawn of the Seven Premiere', 'Entertainment', 250.00, 40.7135, -74.0070);
+INSERT INTO Attraction (AttractionID, Name, Category, EntryFee, Coordinates_Lat, Coordinates_Long, ImageURL) VALUES
+(1, 'Nelson Road Stadium', 'Sports', 45.00, 51.4615, -0.3040, 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'),
+(2, 'Guardians of the Globe Base', 'Museum', 15.00, 41.8790, -87.6300, 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80'),
+(3, 'Dawn of the Seven Premiere', 'Entertainment', 250.00, 40.7135, -74.0070, 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80'),
+(4, 'Kirstenbosch Gardens', 'Nature', 10.00, -33.9890, 18.4320, 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=600&q=80'),
+(5, 'Shibuya Crossing', 'Sightseeing', 0.00, 35.6595, 139.7006, 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80');
 
-INSERT INTO Restaurant (RestaurantID, Name, CuisineType, AverageCost, Coordinates_Lat, Coordinates_Long) VALUES
-(1, 'Taste of Athens', 'Greek', 40.00, 51.4620, -0.3050),
-(2, 'Burger Mart', 'Fast Food', 12.00, 41.8770, -87.6280),
-(3, 'Vought A Burger', 'Fast Food', 85.00, 40.7120, -74.0050);
+INSERT INTO Restaurant (RestaurantID, Name, CuisineType, AverageCost, Coordinates_Lat, Coordinates_Long, ImageURL) VALUES
+(1, 'Taste of Athens', 'Greek', 40.00, 51.4620, -0.3050, 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80'),
+(2, 'Burger Mart', 'Fast Food', 12.00, 41.8770, -87.6280, 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80'),
+(3, 'Vought A Burger', 'Fast Food', 85.00, 40.7120, -74.0050, 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80'),
+(4, 'Mama Africa Cuisine', 'African', 30.00, -33.9230, 18.4210, 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80'),
+(5, 'Ichiraku Ramen Shibuya', 'Japanese', 15.00, 35.6580, 139.7010, 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80');
 
 -- 5. RELATIONAL ENTITIES: PACKAGES & TRIPS
-INSERT INTO TravelPackage (PackageID, Title, Description, BasePrice, DurationDays, MaxCapacity, AIGeneratedSummary, AgencyID) VALUES
-(1, 'The Richmond Way', 'Experience football, tea, and biscuits with the Greyhounds.', 850.00, 5, 20, 'A heartwarming, optimistic sports tour featuring local pubs and stadium access.', 1),
-(2, 'Hero Training Camp', 'Survive the GDA obstacle courses. Viltrumite attacks not covered by insurance.', 1500.00, 7, 10, 'High-intensity survival and combat training in undisclosed locations.', 2),
-(3, 'The Seven VIP Weekend', 'Meet Homelander, drink Fresca, and stay in pure luxury.', 5000.00, 3, 5, 'Ultra-luxurious, corporately sanitized superhero meet-and-greet experience.', 3);
+INSERT INTO TravelPackage (PackageID, Title, Description, BasePrice, DurationDays, MaxCapacity, AIGeneratedSummary, AgencyID, ImageURL) VALUES
+(1, 'The Richmond Way', 'Experience football, tea, and biscuits with the Greyhounds.', 850.00, 5, 20, 'A heartwarming, optimistic sports tour featuring local pubs and stadium access.', 1, 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80'),
+(2, 'Hero Training Camp', 'Survive the GDA obstacle courses. Viltrumite attacks not covered by insurance.', 1500.00, 7, 10, 'High-intensity survival and combat training in undisclosed locations.', 2, 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&q=80'),
+(3, 'The Seven VIP Weekend', 'Meet Homelander, drink Fresca, and stay in pure luxury.', 5000.00, 3, 5, 'Ultra-luxurious, corporately sanitized superhero meet-and-greet experience.', 3, 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=600&q=80'),
+(4, 'African Safari Adventure', 'Explore Table Mountain, Kirstenbosch botanical gardens, and local cuisine.', 1200.00, 6, 12, 'A scenic exploration of South Africa\'s botanical and coastal beauty.', 1, 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=600&q=80'),
+(5, 'Tokyo Neon Lights', 'Immerse yourself in Shibuya crossing, traditional gardens, and ramen tasting.', 2200.00, 5, 8, 'An electric neon-filled tour through Tokyo\'s most iconic city streets and sights.', 3, 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80');
 
 -- Linking M:N Relationships (Associative Tables)
-INSERT INTO Package_Destination VALUES (1, 1), (2, 2), (3, 3);
-INSERT INTO Package_Flight VALUES (1, 1), (2, 2), (3, 3);
-INSERT INTO Package_Accommodation VALUES (1, 1), (2, 2), (3, 3);
-INSERT INTO Package_Attraction VALUES (1, 1), (2, 2), (3, 3);
-INSERT INTO Package_Restaurant VALUES (1, 1), (2, 2), (3, 3);
+INSERT INTO Package_Destination VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
+INSERT INTO Package_Flight VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
+INSERT INTO Package_Accommodation VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
+INSERT INTO Package_Attraction VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
+INSERT INTO Package_Restaurant VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
 
 -- Group Trips (Weak Entity: Identifies by PackageID and TripDateID)
 INSERT INTO GroupTrip (PackageID, TripDateID, StartDate, EndDate, Status) VALUES
 (1, 1, '2026-06-01', '2026-06-06', 'Scheduled'),
 (1, 2, '2026-06-15', '2026-06-20', 'Scheduled'),
 (2, 1, '2026-07-15', '2026-07-22', 'Scheduled'),
-(3, 1, '2026-08-10', '2026-08-13', 'Scheduled');
+(3, 1, '2026-08-10', '2026-08-13', 'Scheduled'),
+(4, 1, '2026-09-01', '2026-09-07', 'Scheduled'),
+(5, 1, '2026-10-10', '2026-10-15', 'Scheduled');
 
 -- 6. BOOKINGS & REVIEWS
 -- Ted Lasso books the Training Camp
@@ -327,7 +341,11 @@ INSERT INTO Booking (BookingDate, TotalAmount, PaymentStatus, PartySize, Travell
 -- Mark Grayson books the Richmond trip
 (NOW(), 1700.00, 'Pending', 2, 6, 1, 1),
 -- Butcher books the Vought weekend
-(NOW(), 5000.00, 'Paid', 1, 8, 3, 1);
+(NOW(), 5000.00, 'Paid', 1, 8, 3, 1),
+-- Roy Kent books Package 4 (African Safari)
+(NOW(), 1200.00, 'Paid', 1, 5, 4, 1),
+-- Nolan Grayson books Package 5 (Tokyo Neon Lights)
+(NOW(), 4400.00, 'Paid', 2, 7, 5, 1);
 
 -- Reviews (Weak Entity: ReviewID starts at 1 for each TravellerID)
 -- Constraint: TargetAgencyID OR TargetPackageID, NOT both.
@@ -339,4 +357,16 @@ INSERT INTO Review (TravellerID, ReviewID, Rating, Comment, TargetAgencyID, Targ
 -- Butcher reviews the Vought Package 
 (8, 1, 1, 'Diabolical. Homelander was a right prick.', NULL, 3),
 -- Ted Lasso reviews the GDA Agency
-(4, 1, 4, 'Well howdy! The bunker was a bit dark, but Cecil meant well.', 2, NULL);
+(4, 1, 4, 'Well howdy! The bunker was a bit dark, but Cecil meant well.', 2, NULL),
+-- Roy Kent reviews Package 4
+(5, 2, 5, 'Absolutely brilliant. Saw a lion. Top class.', NULL, 4),
+-- Nolan Grayson reviews Package 5
+(7, 1, 4, 'Interesting culture. Fast travel.', NULL, 5);
+
+-- 7. NOTIFICATIONS
+INSERT INTO Notification (UserID, Title, Message, IsRead, CreatedAt) VALUES
+(1, 'New Booking Received', 'Roy Kent has booked African Safari Adventure!', 0, NOW()),
+(3, 'New Booking Received', 'Nolan Grayson has booked Tokyo Neon Lights!', 0, NOW()),
+(4, 'Trip Scheduled', 'Your Hero Training Camp trip is scheduled for 2026-07-15.', 0, NOW()),
+(5, 'Payment Success', 'Your payment of R 1,200.00 for African Safari Adventure was successful.', 0, NOW()),
+(6, 'Booking Pending', 'Your booking for The Richmond Way is pending agency confirmation.', 0, NOW());
