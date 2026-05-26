@@ -140,35 +140,3 @@ Use these to explore itineraries, test Leaflet.js geodesic maps, write reviews t
 *   **Sentiment Review Entries**: Pre-loaded with positive, negative, and neutral comment strings to test the Custom Sentiment Lexicon engine and automatic rating re-calculation.
 *   ** AppBar Notifications**: Seeding includes read and unread messages for various accounts, enabling direct visual verification of the notification hub bell icon.
 
-
----
-
-## 🌿 Git Team Workflow
-
-To keep code stable and ensure smooth collaboration, we work on isolated **feature branches** before committing or merging into `develop` or `main`.
-
-### Creating a Feature Branch
-Before starting changes, branch out from the latest `develop`:
-```bash
-git checkout develop
-git pull origin develop
-git checkout -b feature/your-feature-name
-```
-
-### Staging & Committing Changes
-Always verify status and diff before staging files:
-```bash
-git status
-git add .
-git commit -m "feat: integrate premium styling to explore lists and detail panels"
-```
-
-### Merging / Overwriting `develop` Locally
-To update or overwrite your local `develop` branch with your completed feature branch:
-```bash
-git checkout develop
-# Merge feature branch (resolving conflicts if any)
-git merge feature/your-feature-name
-# Or push feature branch to origin for peer review
-git push origin feature/your-feature-name
-```

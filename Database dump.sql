@@ -137,6 +137,8 @@ CREATE TABLE TravelPackage (
     FOREIGN KEY (AgencyID) REFERENCES TravelAgency(UserID) ON DELETE RESTRICT
 );
 
+CREATE INDEX idx_package_price ON TravelPackage(BasePrice);
+
 CREATE TABLE GroupTrip (
     PackageID INT NOT NULL,
     TripDateID INT NOT NULL,
