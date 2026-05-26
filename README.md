@@ -92,43 +92,40 @@ This utility automatically drops old tables, configures all foreign key triggers
 
 ## 🔑 Seeded Mock Accounts & Datasets
 
-To test all aspects of the application without registering new accounts, use these pre-loaded mock credentials (all accounts share the password **`password123`**):
+To test all aspects of the application without registering new accounts, use these pre-loaded mock credentials:
 
 ### 🏢 Travel Agency Accounts
-Use these to manage catalogs, schedule date ranges, view Chart.js analytics, and interact with the CRM Lead Directory:
-*   **Wanderlust Travels** (Superb 4.90 Rating, 4 Active Packages, 6 Paid Bookings):
-    *   **Email**: `contact@wanderlust.com`
-    *   **Password**: `password123`
-*   **GlobeTrek Expeditions** (3.00 Rating, 2 Active Packages, Pending Bookings):
-    *   **Email**: `info@globetrek.com`
-    *   **Password**: `password123`
-*   **Apex Alpine Adventures** (New Agency, 4.50 Rating, Luxury Alps package):
-    *   **Email**: `apex@agency.com`
-    *   **Password**: `password123`
+Use these to manage catalogs, schedule date ranges, view Chart.js analytics, and interact with the CRM insights directory:
+*   **Richmond AFC Tours** (Rating: 4.80):
+    *   **Email**: `rebecca@richmond.co.uk`
+    *   **Password**: `biscuits`
+*   **GDA Defense Travel** (Rating: 4.10):
+    *   **Email**: `cecil@gda.gov`
+    *   **Password**: `invisible`
+*   **Vought International Getaways** (Rating: 4.90):
+    *   **Email**: `ashley@vought.com`
+    *   **Password**: `homelander`
 
 ### 🧑‍🚀 Explorer Traveller Accounts
 Use these to explore itineraries, test Leaflet.js geodesic maps, write reviews to trigger sentiment scores, check out trips, and sync calendar downloads:
-*   **Alice Smith** (Paris fan, budget $5,500.00, paid bookings, unread alerts):
-    *   **Email**: `alice@gmail.com`
-    *   **Password**: `password123`
-*   **Bob Jones** (Asia enthusiast, budget $1,600.00, pending Japan booking):
-    *   **Email**: `bob@gmail.com`
-    *   **Password**: `password123`
-*   **Charlie Brown** (Italy explorer, budget $2,900.00, paid Bali trip):
-    *   **Email**: `charlie@gmail.com`
-    *   **Password**: `password123`
-*   **Diana Prince** (Luxury traveller, budget $8,500.00, paid Paris & pending Swiss Alps):
-    *   **Email**: `diana@gmail.com`
-    *   **Password**: `password123`
-*   **Evan Wright** (Surfer, budget $1,800.00, refunded Bali trip):
-    *   **Email**: `evan@gmail.com`
-    *   **Password**: `password123`
-*   **Fiona Gallagher** (Budget explorer, budget $1,200.00, failed checkout):
-    *   **Email**: `fiona@gmail.com`
-    *   **Password**: `password123`
-*   **George Lucas** (High-roller traveller, budget $25,000.00, multiple paid group bookings):
-    *   **Email**: `george@gmail.com`
-    *   **Password**: `password123`
+*   **Ted Lasso** (Budget: R 5,000.00):
+    *   **Email**: `ted.lasso@gmail.com`
+    *   **Password**: `believe`
+*   **Roy Kent** (Budget: R 12,000.00):
+    *   **Email**: `roy.kent@chelsea.com`
+    *   **Password**: `grr`
+*   **Mark Grayson** (Budget: R 800.00):
+    *   **Email**: `mark.grayson@highschool.edu`
+    *   **Password**: `invincible`
+*   **Nolan Grayson** (Budget: R 50,000.00):
+    *   **Email**: `nolan@viltrum.org`
+    *   **Password**: `conquer`
+*   **Billy Butcher** (Budget: R 2,500.00):
+    *   **Email**: `butcher@theboys.co.uk`
+    *   **Password**: `diabolical`
+*   **Hugh Campbell** (Budget: R 1,200.00):
+    *   **Email**: `hughie@electronics.com`
+    *   **Password**: `starlight`
 
 ### 📊 Seeded Datasets Included
 
