@@ -56,6 +56,7 @@ CREATE TABLE Destination (
     PopularityScore INT DEFAULT 0,
     Coordinates_Lat DECIMAL(10,8),
     Coordinates_Long DECIMAL(11,8),
+    ImageURL VARCHAR(500) DEFAULT NULL,
     CONSTRAINT chk_Dest_Lat CHECK (Coordinates_Lat BETWEEN -90 AND 90),
     CONSTRAINT chk_Dest_Long CHECK (Coordinates_Long BETWEEN -180 AND 180)
 );
@@ -86,6 +87,7 @@ CREATE TABLE Accommodation (
     Address_Zip VARCHAR(20),
     Coordinates_Lat DECIMAL(10,8),
     Coordinates_Long DECIMAL(11,8),
+    ImageURL VARCHAR(500) DEFAULT NULL,
     CONSTRAINT chk_AccommPrice CHECK (PricePerNight >= 0),
     CONSTRAINT chk_StarRating CHECK (StarRating BETWEEN 1 AND 5)
 );
@@ -97,6 +99,7 @@ CREATE TABLE Attraction (
     EntryFee DECIMAL(10,2) DEFAULT 0.00,
     Coordinates_Lat DECIMAL(10,8),
     Coordinates_Long DECIMAL(11,8),
+    ImageURL VARCHAR(500) DEFAULT NULL,
     CONSTRAINT chk_EntryFee CHECK (EntryFee >= 0)
 );
 
@@ -107,6 +110,7 @@ CREATE TABLE Restaurant (
     AverageCost DECIMAL(10,2) DEFAULT 0.00,
     Coordinates_Lat DECIMAL(10,8),
     Coordinates_Long DECIMAL(11,8),
+    ImageURL VARCHAR(500) DEFAULT NULL,
     CONSTRAINT chk_AverageCost CHECK (AverageCost >= 0)
 );
 
@@ -120,6 +124,7 @@ CREATE TABLE TravelPackage (
     MaxCapacity INT NOT NULL,
     AIGeneratedSummary TEXT,
     AgencyID INT NOT NULL,
+    ImageURL VARCHAR(500) DEFAULT NULL,
     CONSTRAINT chk_BasePrice CHECK (BasePrice >= 0),
     CONSTRAINT chk_DurationDays CHECK (DurationDays > 0),
     CONSTRAINT chk_MaxCapacity CHECK (MaxCapacity > 0),
