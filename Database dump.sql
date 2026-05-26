@@ -1,5 +1,7 @@
 --Create Database
-CREATE DATABASE Tripistry;
+DROP DATABASE IF EXISTS `tripistry-cos221`;
+CREATE DATABASE `tripistry-cos221`;
+USE `tripistry-cos221`;
 
 --Create Tables
 -- 1. BASE SUPERCLASS 
@@ -239,15 +241,15 @@ CREATE TABLE Notification (
 -- 1. SUPERCLASS: USERS
 -- IDs 1-3 are Agencies. IDs 4-9 are Travellers.
 INSERT INTO User (UserID, Email, PasswordHash, DateJoined, LastLoginTime, AccountStatus) VALUES
-(1, 'rebecca@richmond.co.uk', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-01', NOW(), 'Active'),
-(2, 'cecil@gda.gov', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-05', NOW(), 'Active'),
-(3, 'ashley@vought.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-10', NOW(), 'Active'),
+(1, 'rebecca@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-01', NOW(), 'Active'),
+(2, 'cecil@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-05', NOW(), 'Active'),
+(3, 'ashley@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-01-10', NOW(), 'Active'),
 (4, 'ted.lasso@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-01', NOW(), 'Active'),
-(5, 'roy.kent@chelsea.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-02', NOW(), 'Active'),
-(6, 'mark.grayson@highschool.edu', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-03', NOW(), 'Active'),
-(7, 'nolan@viltrum.org', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-04', NOW(), 'Active'),
-(8, 'butcher@theboys.co.uk', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-05', NOW(), 'Active'),
-(9, 'hughie@electronics.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-06', NOW(), 'Active');
+(5, 'roy.kent@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-02', NOW(), 'Active'),
+(6, 'mark.grayson@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-03', NOW(), 'Active'),
+(7, 'nolan@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-04', NOW(), 'Active'),
+(8, 'butcher@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-05', NOW(), 'Active'),
+(9, 'hughie@gmail.com', '$2y$10$P7haEohp.oAKm3RQ4RNq3O0atIICjeQus556jn9odsG4SlB7OiuOC', '2025-02-06', NOW(), 'Active');
 
 -- 2. SUBCLASSES: AGENCIES & TRAVELLERS
 INSERT INTO TravelAgency (UserID, AgencyName, RegistrationNumber, AverageRating, Address_Street, Address_City, Address_Zip) VALUES
