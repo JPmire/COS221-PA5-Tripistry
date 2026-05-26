@@ -55,11 +55,16 @@ The database connection relies on a ignored `config.php` file for local developm
    $pass = '';                 // Database password (default: empty on XAMPP)
    ```
 
-### 4. Import the Schema & Seed Data
-You can set up the database using either the automatic CLI script or manual phpMyAdmin import.
+### 4. Database Setup & SQL Files Overview
+The repository includes three database files:
+1.  **`Tripistry_schema.sql`**: Contains the complete relational database table definitions, foreign keys, check constraints, and referential triggers.
+2.  **`seed.sql`**: Contains all SQL query inserts to pre-populate the tables with realistic, curated mock data (matching the accounts below).
+3.  **`Database dump.sql`**: A unified database dump containing **both** table schemas and the population seeds in one single file.
+
+You can set up the database using any of the following three options:
 
 #### Option A: One-Click Automatic CLI Command (Recommended)
-If you have PHP installed in your terminal, run the helper utility:
+If you have PHP in your CLI, run the helper reset script which drops existing tables, creates the schema, and seeds all mock data automatically:
 *   **Mac/Linux**:
     ```bash
     /Applications/XAMPP/xamppfiles/bin/php -f scratch/reset_db.php
@@ -68,64 +73,58 @@ If you have PHP installed in your terminal, run the helper utility:
     ```cmd
     php scratch\reset_db.php
     ```
-This utility automatically drops old tables, configures all foreign key triggers, compiles indices, and inserts fully-populated seed datasets.
 
-#### Option B: Manual phpMyAdmin Import (Step-by-Step for XAMPP)
-1. **Open phpMyAdmin**: Launch your web browser and go to [http://localhost/phpmyadmin](http://localhost/phpmyadmin).
-2. **Create Database**:
-   * Click the **New** button in the left-hand navigation pane.
-   * Enter `tripistry-cos221` as the database name.
-   * Select **`utf8mb4_general_ci`** from the collation dropdown (ensures full Unicode and emoji compatibility).
-   * Click **Create**.
-3. **Import the Table Schema**:
-   * Select the newly created `tripistry-cos221` database in the left sidebar.
-   * Click the **Import** tab located on the top horizontal menu bar.
-   * Click the **Choose File** button under *File to import*, navigate to your repository folder, and select **`Tripistry_schema.sql`**.
-   * Leave all other settings at their defaults and scroll down to the bottom of the page.
-   * Click the **Import** (or **Go**) button. You should see a green success banner showing tables created.
-4. **Import the Mock Seed Data**:
-   * Click the **Import** tab on the top menu bar once again.
-   * Click **Choose File** and select the **`seed.sql`** file.
-   * Scroll to the bottom and click **Import** (or **Go**). Your database is now fully populated with comprehensive mock records!
+#### Option B: Manual phpMyAdmin Unified Import (Simplest Manual Option)
+1. **Open phpMyAdmin**: Navigate to [http://localhost/phpmyadmin](http://localhost/phpmyadmin).
+2. **Create Database**: Click **New**, enter `tripistry-cos221` as the database name, select **`utf8mb4_general_ci`** collation, and click **Create**.
+3. **Import Unified Dump**:
+   * Select `tripistry-cos221` from the left list.
+   * Click the **Import** tab on the top menu.
+   * Choose **`Database dump.sql`** and click **Import** (or **Go**). Your schema and data are now fully set up in one step!
+
+#### Option C: Split Schema & Seed Import
+1. **Create Database**: Follow step 1 and 2 above.
+2. **Import Schema**: Select `tripistry-cos221`, click **Import**, choose **`Tripistry_schema.sql`**, and import it to create all tables.
+3. **Import Seeds**: Click **Import** once more, choose **`seed.sql`**, and import it to populate all tables.
 
 ---
 
 ## 🔑 Seeded Mock Accounts & Datasets
 
-To test all aspects of the application without registering new accounts, use these pre-loaded mock credentials:
+To test all aspects of the application without registering new accounts, use these pre-loaded mock credentials (**all accounts share the password `password123`**):
 
 ### 🏢 Travel Agency Accounts
 Use these to manage catalogs, schedule date ranges, view Chart.js analytics, and interact with the CRM insights directory:
 *   **Richmond AFC Tours** (Rating: 4.80):
     *   **Email**: `rebecca@richmond.co.uk`
-    *   **Password**: `biscuits`
+    *   **Password**: `password123`
 *   **GDA Defense Travel** (Rating: 4.10):
     *   **Email**: `cecil@gda.gov`
-    *   **Password**: `invisible`
+    *   **Password**: `password123`
 *   **Vought International Getaways** (Rating: 4.90):
     *   **Email**: `ashley@vought.com`
-    *   **Password**: `homelander`
+    *   **Password**: `password123`
 
 ### 🧑‍🚀 Explorer Traveller Accounts
 Use these to explore itineraries, test Leaflet.js geodesic maps, write reviews to trigger sentiment scores, check out trips, and sync calendar downloads:
 *   **Ted Lasso** (Budget: R 5,000.00):
     *   **Email**: `ted.lasso@gmail.com`
-    *   **Password**: `believe`
+    *   **Password**: `password123`
 *   **Roy Kent** (Budget: R 12,000.00):
     *   **Email**: `roy.kent@chelsea.com`
-    *   **Password**: `grr`
+    *   **Password**: `password123`
 *   **Mark Grayson** (Budget: R 800.00):
     *   **Email**: `mark.grayson@highschool.edu`
-    *   **Password**: `invincible`
+    *   **Password**: `password123`
 *   **Nolan Grayson** (Budget: R 50,000.00):
     *   **Email**: `nolan@viltrum.org`
-    *   **Password**: `conquer`
+    *   **Password**: `password123`
 *   **Billy Butcher** (Budget: R 2,500.00):
     *   **Email**: `butcher@theboys.co.uk`
-    *   **Password**: `diabolical`
+    *   **Password**: `password123`
 *   **Hugh Campbell** (Budget: R 1,200.00):
     *   **Email**: `hughie@electronics.com`
-    *   **Password**: `starlight`
+    *   **Password**: `password123`
 
 ### 📊 Seeded Datasets Included
 
