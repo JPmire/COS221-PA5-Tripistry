@@ -96,13 +96,13 @@ To test all aspects of the application without registering new accounts, use the
 ### 🏢 Travel Agency Accounts
 Use these to manage catalogs, schedule date ranges, view Chart.js analytics, and interact with the CRM insights directory:
 *   **Richmond AFC Tours** (Rating: 4.80):
-    *   **Email**: `rebecca@richmond.co.uk`
+    *   **Email**: `rebecca@gmail.com`
     *   **Password**: `password123`
 *   **GDA Defense Travel** (Rating: 4.10):
-    *   **Email**: `cecil@gda.gov`
+    *   **Email**: `cecil@gmail.com`
     *   **Password**: `password123`
 *   **Vought International Getaways** (Rating: 4.90):
-    *   **Email**: `ashley@vought.com`
+    *   **Email**: `ashley@gmail.com`
     *   **Password**: `password123`
 
 ### 🧑‍🚀 Explorer Traveller Accounts
@@ -111,19 +111,19 @@ Use these to explore itineraries, test Leaflet.js geodesic maps, write reviews t
     *   **Email**: `ted.lasso@gmail.com`
     *   **Password**: `password123`
 *   **Roy Kent** (Budget: R 12,000.00):
-    *   **Email**: `roy.kent@chelsea.com`
+    *   **Email**: `roy.kent@gmail.com`
     *   **Password**: `password123`
 *   **Mark Grayson** (Budget: R 800.00):
-    *   **Email**: `mark.grayson@highschool.edu`
+    *   **Email**: `mark.grayson@gmail.com`
     *   **Password**: `password123`
 *   **Nolan Grayson** (Budget: R 50,000.00):
-    *   **Email**: `nolan@viltrum.org`
+    *   **Email**: `nolan@gmail.com`
     *   **Password**: `password123`
 *   **Billy Butcher** (Budget: R 2,500.00):
-    *   **Email**: `butcher@theboys.co.uk`
+    *   **Email**: `butcher@gmail.com`
     *   **Password**: `password123`
 *   **Hugh Campbell** (Budget: R 1,200.00):
-    *   **Email**: `hughie@electronics.com`
+    *   **Email**: `hughie@gmail.com`
     *   **Password**: `password123`
 
 ### 📊 Seeded Datasets Included
